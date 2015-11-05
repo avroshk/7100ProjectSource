@@ -23,32 +23,49 @@ class ofApp : public ofBaseApp{
     void plot(vector<float>& buffer, float scale, float offset);
     void audioReceived(float* input, int bufferSize, int nChannels);
     void processBlock(float* block, int windowBuffer, int nChannels);
+    void changeDeviceId();
     
     void getFreshMesh();
     
-   
-    
-    
+    //Graphs ----------
     int plotHeight, bufferSize, overlapMultiple, nBuffers, sampleRate, nInputs, nOutputs;
     
+    //Audio --------
+    bool micInput = 0;
     ofxFft* fft;
     ofSoundStream soundStream;
 
     ofMutex soundMutex;
-    vector<float> drawBins, middleBins, audioBins, leftInput, leftWithOverlap, spectralFlux, spectralRollOff, fftData;
-    float* block;
+    vector<float> drawBins, middleBins, audioBins, leftInput, rightInput, leftWithOverlap, spectralFlux, spectralRollOff, fftData;
     
     vector<float> pitchChroma;
+   
+    float instantaneousFlux, instantaneousFluxPrev, instantaneousRollOff, instantaneousRollOffPrev,instantaneousPitch, curFreq, referencePitch, alphaFactor, rms;
+    
+    int numHops;
+    
+    float* block;
+    float** midiBins; //for Pitch Chroma
+    
+    //image -----------
+    ofFbo fbo;
+    ofPixels fboPixels;
+    ofMesh mesh, meshGrid;
+    
+    vector<ofVec3f> offsets;
+    int jitterCounter;
     
     bool succ,alphaBool,zeeBool,jitterBool;
     ofImage myImage;
-   
-    float instantaneousFlux, instantaneousRollOff,instantaneousPitch, curFreq, referencePitch;
-    ofFbo fbo;
-    ofPixels fboPixels;
-    ofMesh mesh;
-    vector<ofVec3f> offsets;
-    int jitterCounter,numHops;
     
-    float** midiBins;
+    int imageHeight = 628;
+    int imageWidth = 784;
+    int W = 100; //Grid size
+    int H = 100;
+    int meshSize = 6;
+    //---- temp
+    float tempMax = 0;
+    //---- temp
+    
+
 };

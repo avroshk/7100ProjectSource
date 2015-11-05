@@ -2,6 +2,9 @@
 
 //--------------------------------------------------------------
 void ofApp::setup(){
+    
+ 
+    
     ofSetVerticalSync(true);
     
     plotHeight = 128;
@@ -9,16 +12,23 @@ void ofApp::setup(){
     overlapMultiple = 4; // times the hopSize
     nBuffers = 1;
     sampleRate = 44100;
-    nInputs = 1;
+    //nInputs = 2; //stereo
+    nInputs = 1; //mono
     nOutputs = 0;
+    numHops = 0;
     
     leftInput.assign(bufferSize, 0.0); //size of one hop
+    
+    if(nInputs == 2) {
+        rightInput.assign(bufferSize, 0.0); //size of one hop
+    }
+    
     leftWithOverlap.assign(bufferSize*overlapMultiple, 0.0); //size of hop*overlapMultiple
     
     soundStream.listDevices();
     
     //if you want to set a different device id
-    //soundStream.setDeviceID(1); //bear in mind the device id corresponds to all audio devices, including  input-only and output-only devices.
+    soundStream.setDeviceID(3); //bear in mind the device id corresponds to all audio devices, including  input-only and output-only devices.
     
     //fft = ofxFft::create(bufferSize, OF_FFT_WINDOW_HAMMING);
     fft = ofxFft::create(bufferSize*overlapMultiple, OF_FFT_WINDOW_HAMMING, OF_FFT_FFTW);
@@ -38,10 +48,10 @@ void ofApp::setup(){
     soundStream.setup(this, nOutputs, nInputs, sampleRate, bufferSize, nBuffers);
     
     instantaneousFlux = 0;
+    instantaneousFluxPrev = 0;
     instantaneousRollOff = 0;
+    instantaneousRollOffPrev = 0;
     instantaneousPitch = 0;
-    
-    //    int temp = soundStream.getTickCount();
     
     ofBackground(0, 0, 0);
     
@@ -54,10 +64,8 @@ void ofApp::setup(){
     midiBins = new float*[height];
     midiBins[0] = new float[length];
     midiBins[1] = new float[length];
-   
     
     float tempCalc = sampleRate/(bufferSize*overlapMultiple);
-    
     
     for (unsigned int k = 0; k < fftData.size(); k++){
         
@@ -69,13 +77,10 @@ void ofApp::setup(){
             midiBins[0][k] = round(69+12*log2f(curFreq/referencePitch));
     }
     
-    
-    
     // ------ Image setup -----------
     succ = myImage.loadImage("rains.jpg");
-    
+
     getFreshMesh();
-    
     
     fbo.allocate(784, 628);
     // clear fbo
@@ -84,11 +89,39 @@ void ofApp::setup(){
     fbo.end();
     
     jitterCounter = 0;
-    numHops = 0;
     
-   
+    //Set up vertices
+    for (int y=0; y<H; y++) {
+        for (int x=0; x<W; x++) {
+            meshGrid.addVertex(ofPoint((x - W/2) * meshSize, (y - H/2) * meshSize, 0 )); // adding texure coordinates allows us to bind textures to it later // --> this could be made into a function so that textures can be swapped / updated
+            meshGrid.addTexCoord(ofPoint(x * ( imageWidth/ W), y * (imageHeight / H)));
+            meshGrid.addColor(ofColor(255, 255, 255));
+        }
+    }
+    
+    //Set up triangles' indices
+    for (int y=0; y<H-1; y++) {
+        for (int x=0; x<W-1; x++) {
+            int i1 = x + W * y;
+            int i2 = x+1 + W * y;
+            int i3 = x + W * (y+1);
+            int i4 = x+1 + W * (y+1);
+            meshGrid.addTriangle( i1, i2, i3 );
+            meshGrid.addTriangle( i2, i4, i3 );
+        }
+    }
 
 }
+//--------------------
+void ofApp::changeDeviceId() {
+    if (micInput == 1) {
+        soundStream.setDeviceID(1);
+    }
+    else {
+        soundStream.setDeviceID(3);
+    }
+}
+
 //--------------------
 void ofApp::getFreshMesh(){
     float intensityThreshold = 175.0;
@@ -116,6 +149,35 @@ void ofApp::getFreshMesh(){
 
 //--------------------------------------------------------------
 void ofApp::update(){
+    
+    //Max pitch chroma
+    float maxPitch = 0;
+    for (int i =0; i<pitchChroma.size(); i++) {
+        if (maxPitch < pitchChroma[i]) {
+            maxPitch = pitchChroma[i];
+        }
+    }
+    
+    //Apply noise to mesh
+    //Change vertices
+    for (int y=0; y<H; y++) {
+        for (int x=0; x<W; x++) {
+            
+            //Vertex index
+            int i = x + W * y;
+            ofPoint p = meshGrid.getVertex( i );
+            
+            //Change z-coordinate of vertex
+            
+            p.z = ofNoise(x * 0.05, y * 0.05, ofGetElapsedTimef() * 0.5) * 100;
+            meshGrid.setVertex( i, p );
+            
+            //Change color of vertex
+            meshGrid.setColor(i , ofColor(255, 255, 255));
+        }
+    }
+    alphaFactor = 0.5;
+    
     //Instantaneous Flux ---------------
     instantaneousFlux = 0;
     for (unsigned int i = 0; i < spectralFlux.size(); i++){
@@ -128,12 +190,19 @@ void ofApp::update(){
     instantaneousFlux = 2*instantaneousFlux/spectralFlux.size();
     //instantaneousFlux = instantaneousFlux/20;
     
+    instantaneousFlux = (1-alphaFactor)*instantaneousFlux + alphaFactor*instantaneousFluxPrev;
+    
+    instantaneousFluxPrev = instantaneousFlux;
+    
     //Instantaneous RollOff ---------------
     for (unsigned int i = 0; i < spectralRollOff.size(); i++){
         instantaneousRollOff = instantaneousRollOff + spectralRollOff[i];
     }
     instantaneousRollOff = 2*instantaneousRollOff/spectralRollOff.size();
+    
+    instantaneousRollOff = (1-alphaFactor)*instantaneousRollOff + alphaFactor*instantaneousRollOffPrev;
 
+    instantaneousRollOffPrev = instantaneousRollOff;
     
     //Find pitch --------------------
     float maxBinValue = 0;
@@ -226,6 +295,7 @@ void ofApp::update(){
 
 //--------------------------------------------------------------
 void ofApp::draw(){
+    
     fbo.begin();
     ofClear(255,255,255, 0);
     fbo.end();
@@ -262,9 +332,6 @@ void ofApp::draw(){
             for (unsigned int i = 0; i < leftInput.size(); i++){
                 ofVertex(2*i, 100 -leftInput[i]*180.0f);
             }
-    
-    
-    
             ofEndShape(false);
         ofPopMatrix();
     ofPopStyle();
@@ -337,8 +404,21 @@ void ofApp::draw(){
     
     string msgPitch ="Pitch " + ofToString((float)instantaneousPitch) + " Hz";
     ofDrawBitmapString(msgPitch, 400, ofGetHeight() - 5);
-
     
+    //Max pitch chroma
+    float maxPitch = 0;
+    for (int i =0; i<pitchChroma.size(); i++) {
+        if (maxPitch < pitchChroma[i]) {
+            maxPitch = pitchChroma[i];
+        }
+    }
+    
+    string msgMaxPitchChroma ="Max Pitch Chroma " + ofToString((float)maxPitch);
+    ofDrawBitmapString(msgMaxPitchChroma, 550, ofGetHeight() - 5);
+    
+    string msgTemp ="Temp " + ofToString((float)tempMax);
+    ofDrawBitmapString(msgTemp, 550, ofGetHeight() - 45);
+
     
 
     fbo.begin();
@@ -382,6 +462,14 @@ void ofApp::draw(){
     }
     
     myImage.bind();
+    
+    //ofPushMatrix(); //Store the coordinate system
+//    ofTranslate( ofGetWidth()/2, ofGetHeight()/2, 0 );  //Move the coordinate center to screen's center
+//    //meshGrid.drawWireframe();
+//    meshGrid.draw();
+//    ofPopMatrix(); //Restore the coordinate system
+//
+    
     mesh.draw();
     myImage.unbind();
     
@@ -442,7 +530,7 @@ void ofApp::processBlock(float* window, int windowBufferSize, int nChannels){
     fftData = audioBins;
     
     //Calculate Spectral flux
-    if(soundStream.getTickCount() > 1){
+    if(soundStream.getTickCount() > 1){ //handle this before sending FFT to myFeatures.
         for(int i = 0; i < fft->getBinSize(); i++) {
             spectralFlux[i] = ((middleBins[i]-audioBins[i])*(middleBins[i]-audioBins[i]));
         }
@@ -453,6 +541,11 @@ void ofApp::processBlock(float* window, int windowBufferSize, int nChannels){
     if(soundStream.getTickCount() > 1){
         for(int i = 0; i < fft->getBinSize(); i++) {
             spectralRollOff[i] = abs(audioBins[i]);
+            //------ temp
+            if(tempMax < spectralRollOff[i]) {
+                tempMax = spectralRollOff[i];
+            }
+            //------ temp
         }
     }
     
@@ -467,34 +560,50 @@ void ofApp::processBlock(float* window, int windowBufferSize, int nChannels){
 
 void ofApp::audioReceived(float* input, int bufferSize, int nChannels) {
     
-    //cout << soundStream.getTickCount() << " " ;
+    float* inputLeft = input;
+    float* inputRight;
     
-    if (soundStream.getTickCount() > overlapMultiple-1) {
-        processBlock(block,bufferSize*overlapMultiple,nChannels);
-        //Shift block data to left
-        copy(block+bufferSize, block+bufferSize*overlapMultiple, &block[0]);
-        //Get the last hop data into the block
-        copy(input, input + bufferSize, &block[bufferSize*(overlapMultiple-1)]);
-    }
-    else {
-        copy(input, input + bufferSize, &block[numHops*bufferSize]);
-        numHops++;
+    if (nChannels == 2) {
+       inputRight = input + bufferSize; //not used for now
     }
     
-    float maxValue;
-    
-    for(int i = 0; i < bufferSize; i++) {
-        if(abs(input[i]) > maxValue) {
-            maxValue = abs(input[i]);
+    rms = 0;
+    if(soundStream.getTickCount() > 1) {
+        for(int i = 0; i < bufferSize; i++) {
+            rms = rms + input[i]*input[i];
         }
-        //Store the input in the leftInput
-        leftInput[i] = input[i];
+        rms = sqrt(rms/bufferSize);
+        if (rms != 0) { // check for silence
+            
+            //Use circular mapping of pointer to improve performance
+            if (soundStream.getTickCount() > overlapMultiple-1) {
+                processBlock(block,bufferSize*overlapMultiple,nChannels);
+                //Shift block data to left
+                copy(block+bufferSize, block+bufferSize*overlapMultiple, &block[0]);
+                //Get the last hop data into the block
+                copy(inputLeft, inputLeft + bufferSize, &block[bufferSize*(overlapMultiple-1)]);
+            }
+            else {
+                copy(inputLeft, inputLeft + bufferSize, &block[numHops*bufferSize]);
+                numHops++;
+            }
+            
+            //Store the input in the leftInput
+            for(int i = 0; i < bufferSize; i++) {
+                leftInput[i] = input[i];
+            }
+            
+            //Store the input in the rightInput if stereo -- not being used for now
+            if (nChannels==2) {
+                for(int i = bufferSize; i < 2*bufferSize; i++) {
+                    rightInput[i] = input[i];
+                }
+            }
+        }
     }
     
 }
-//------------------------------------------
-
-
+//--------------------------------------------------------------
 
 //--------------------------------------------------------------
 void ofApp::keyPressed(int key){
@@ -517,7 +626,10 @@ void ofApp::keyPressed(int key){
     if (key == 'k') {
         getFreshMesh();
     }
-
+    if (key == 'd') {
+        micInput = ! micInput;
+        changeDeviceId();
+    }
 }
 
 //--------------------------------------------------------------

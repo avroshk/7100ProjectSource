@@ -11,6 +11,17 @@
          </PersistentStrings>
       </ContextState>
       <ContextState
+         contextName = "ofApp::processBlock(float*, int, int):ofApp.cpp">
+         <PersistentStrings>
+            <PersistentString
+               value = "*(float(*)[512])window">
+            </PersistentString>
+            <PersistentString
+               value = "fft-&gt;getBinSize()">
+            </PersistentString>
+         </PersistentStrings>
+      </ContextState>
+      <ContextState
          contextName = "ofApp::update():ofApp.cpp">
          <PersistentStrings>
             <PersistentString
@@ -30,6 +41,12 @@
       <ContextState
          contextName = "ofApp::audioReceived(float*, int, int):ofApp.cpp">
          <PersistentStrings>
+            <PersistentString
+               value = "*(float (*)[1024])input">
+            </PersistentString>
+            <PersistentString
+               value = "*(float (*)[512])input">
+            </PersistentString>
             <PersistentString
                value = "*(float (*)[256])input">
             </PersistentString>
