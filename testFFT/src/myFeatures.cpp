@@ -12,7 +12,7 @@ void myFeatures::resetFeatures() {
     sumOfFftBins = 0; rms =0; instantaneousFlux = 0; instantaneousFluxPrev = 0;
     instantaneousRollOff = 0;
     instantaneousRollOffPrev = 0;
-    instantaneousPitch = 0;
+    instantaneousPitch = 0; instantaneousSC = 0; instantaneousSS = 0; instantaneousSD = 0;
     harmonicsSum = 0; chromaSum = 0;
     
     //expose functions to set alpha values
@@ -85,6 +85,19 @@ float myFeatures::getSpectralRollOff() {
     return instantaneousRollOff;
 }
 
+float myFeatures::getSpectralCentroid() {
+    return instantaneousSC;
+}
+
+float myFeatures::getSpectralSpread() {
+    return instantaneousSS;
+}
+
+float myFeatures::getSpectralDecrease() {
+    return instantaneousSD;
+}
+
+
 vector<float> myFeatures::getPitchChroma() {
     soundMutex.lock();
     finalPitchChroma = middlePitchChroma;
@@ -109,6 +122,9 @@ void myFeatures::extractFeatures(float* input, int nChannels) {
         sumFftBins();
         calcSpectralFlux();
         calcSpectralRollOff();
+        calcSpectralCentroid();
+        calcSpectralSpread();
+        calcSpectralDecrease();
         calcPitchChroma();
         
         fftDataPrev = fftData;
@@ -185,6 +201,53 @@ void myFeatures::calcSpectralRollOff() {
 
 }
 
+void myFeatures::calcSpectralCentroid() {
+    float sumSC=0, curSumSC=0;
+    for(int i = 0; i < fftSize; i++) {
+        curSumSC = fftData[i]*fftData[i];
+        
+        instantaneousSC += curSumSC*i;
+        
+        sumSC += curSumSC;
+    }
+    
+    instantaneousSC /= sumSC;
+    
+    //Normalize
+    
+    //instantaneousSC
+
+}
+
+void myFeatures::calcSpectralSpread() {
+    float sumSS=0, curSumSS=0;
+    for(int i = 0; i < fftSize; i++) {
+        curSumSS = pow(fftData[i],2);
+        
+        instantaneousSS += pow(i-instantaneousSC, 2)*curSumSS;
+        
+        sumSS += curSumSS;
+    }
+    
+    instantaneousSS /= sumSS;
+    
+    //Normalize
+    
+}
+
+void myFeatures::calcSpectralDecrease() {
+    
+    for(int i = 0; i < fftSize; i++) {
+        instantaneousSD += (fftData[i] - fftData[0])/(i+1);
+    }
+    
+    instantaneousSD /= sumOfFftBins;
+    
+    //Normalize
+    
+}
+
+
 void myFeatures::calcPitchChroma() {
     
     float maxBinValue = 0;
@@ -257,5 +320,22 @@ void myFeatures::calcPitchChroma() {
     soundMutex.lock();
     middlePitchChroma = pitchChroma;
     soundMutex.unlock();
+}
+
+vector<float> myFeatures::getNormalizedFeatureSet() {
+    vector<float> setOfFeatures;
+    setOfFeatures.resize(numFeatures);
+//    for (int i=0; i<numFeatures; i++) {
+//        setOfFeatures[i] =
+//    }
+    setOfFeatures[0] = instantaneousFlux;
+    setOfFeatures[1] = instantaneousRollOff;
+    setOfFeatures[2] = instantaneousSC;
+    setOfFeatures[3] = instantaneousSS;
+    setOfFeatures[4] = instantaneousSD;
+    setOfFeatures[5] = instantaneousPitch;
+    //debug this - something wrong
+   
+    return setOfFeatures;
 }
 

@@ -25,8 +25,16 @@ public:
     vector<float> getFftData();
     float getSpectralFlux();
     float getSpectralRollOff();
+    float getSpectralCentroid();
+    float getSpectralSpread();
+    float getSpectralDecrease();
     vector<float> getPitchChroma();
     float getPitch();
+    
+    vector<float> getNormalizedFeatureSet();
+   
+    
+    float alphaFlux,alphaRollOff;
     
 private:
     int numFeatures = 6;
@@ -38,8 +46,9 @@ private:
     float* signal;
     vector <float> fftData, fftDataPrev, pitchChroma, finalPitchChroma, middlePitchChroma;
     
-    float instantaneousFlux, instantaneousFluxPrev, alphaFlux;
-    float instantaneousRollOff, instantaneousRollOffPrev, alphaRollOff;
+    float instantaneousFlux, instantaneousFluxPrev;
+    float instantaneousRollOff, instantaneousRollOffPrev;
+    float instantaneousSC, instantaneousSS, instantaneousSD;
     float instantaneousPitch;
     float sumOfFftBins,rms;
     
@@ -53,6 +62,9 @@ private:
     void sumFftBins();
     void calcSpectralFlux();
     void calcSpectralRollOff();
+    void calcSpectralCentroid();
+    void calcSpectralSpread();
+    void calcSpectralDecrease();
     void calcPitchChroma();
     
     //Normalize features

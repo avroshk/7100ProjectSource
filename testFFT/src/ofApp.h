@@ -3,6 +3,7 @@
 #include "ofMain.h"
 #include "ofxFft.h"
 #include "myFeatures.hpp"
+#include "myMappingVector.hpp"
 
 class ofApp : public ofBaseApp{
 
@@ -29,7 +30,7 @@ class ofApp : public ofBaseApp{
     void getFreshMesh();
     
     //Graphs ----------
-    int plotHeight, bufferSize, overlapMultiple, nBuffers, sampleRate, numHops, nInputs, nOutputs, deviceId;
+    int plotHeight, BUFFERSIZE, OVERLAPMULTIPLE, NBUFFERS, SAMPLERATE, NUMHOPS, INPUTS, OUTPUTS, DEVICEID;
     
     //Audio --------
     
@@ -42,6 +43,9 @@ class ofApp : public ofBaseApp{
     vector<float> drawBins, middleBins, audioBins, leftInput, rightInput, pitchChroma;
     
     float* block;
+    //Mapping ---------
+    
+    myMappingVector *featureMap;
     
     //Mesh -----------
     ofFbo fbo;

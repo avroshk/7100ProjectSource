@@ -5,43 +5,53 @@ void ofApp::setup(){
     
     ofSetVerticalSync(true);
     
-    deviceId = 2;  // 2 - at home // 3 - at couch
+    DEVICEID = 2;  // 2 - at home // 3 - at couch - SoundFlower
+    //DEVICEID = 1;  // 1 - at home // 2 - at couch - Microphone Input
+
     
     plotHeight = 128;
-    bufferSize = 256; //hopSize
-    overlapMultiple = 4; // times the hopSize
-    nBuffers = 1;
-    sampleRate = 44100;
-    //nInputs = 2; //stereo
-    nInputs = 1; //mono
-    nOutputs = 0;
-    numHops = 0;
     
-    leftInput.assign(bufferSize, 0.0); //size of one hop
+    BUFFERSIZE = 256; //hopSize
+    OVERLAPMULTIPLE = 4; // times the hopSize
+    NBUFFERS = 1;
+    SAMPLERATE = 44100;
+    //INPUTS = 2; //stereo
+    INPUTS = 1; //mono
+    OUTPUTS = 0;
+    NUMHOPS = 0;
     
-    if(nInputs == 2) {
-        rightInput.assign(bufferSize, 0.0); //size of one hop
+    leftInput.assign(BUFFERSIZE, 0.0); //size of one hop
+    
+    if(INPUTS == 2) {
+        rightInput.assign(BUFFERSIZE, 0.0); //size of one hop
     }
     
     soundStream.listDevices();
     
     //if you want to set a different device id
-    soundStream.setDeviceID(deviceId); //bear in mind the device id corresponds to all audio devices, including  input-only and output-only devices.
+    soundStream.setDeviceID(DEVICEID); //bear in mind the device id corresponds to all audio devices, including  input-only and output-only devices.
     
-    features = new myFeatures(sampleRate,bufferSize*overlapMultiple);
+    features = new myFeatures(SAMPLERATE,BUFFERSIZE*OVERLAPMULTIPLE);
     
-    block = new float[bufferSize*overlapMultiple];
+    block = new float[BUFFERSIZE*OVERLAPMULTIPLE];
     
     drawBins.resize(features->getFftSize());
     middleBins.resize(features->getFftSize());
     audioBins.resize(features->getFftSize());
     pitchChroma.resize(12);
-
     
-    //ofSoundStreamSetup(0, 1, this, 44100, bufferSize, 4); //bufferSize is set here
-    soundStream.setup(this, nOutputs, nInputs, sampleRate, bufferSize, nBuffers);
+    // ------ Sound Setup --------
+    //ofSoundStreamSetup(0, 1, this, 44100, BUFFERSIZE, 4); //BUFFERSIZE is set here
+    soundStream.setup(this, OUTPUTS, INPUTS, SAMPLERATE, BUFFERSIZE, NBUFFERS);
     
     ofBackground(0, 0, 0);
+    
+    // ------ Feature to Effect Mapping setup -----
+
+    featureMap = new myMappingVector(features->getNumOfFeatures(),2);
+    featureMap->routeFeature(1, 0, 0);
+    featureMap->routeFeature(1, 1, 1);
+    featureMap->routeFeature(0.8, 3, 0);
     
     // ------ Image setup -----------
     succ = myImage.loadImage("rains.jpg");
@@ -107,7 +117,10 @@ void ofApp::getFreshMesh(){
 
 //--------------------------------------------------------------
 void ofApp::update(){
-   
+    // ------ Get feature ---
+    float feature1 = featureMap->getFeatureForEffect(0, features->getNormalizedFeatureSet());
+    float feature2 = featureMap->getFeatureForEffect(1, features->getNormalizedFeatureSet());
+    
     
     //Apply noise to mesh
     //Change vertices
@@ -234,12 +247,15 @@ void ofApp::draw(){
 
 //    float alpha = ofMap(exp(instantaneousFlux*50.0f), 1, 50, 180, 255);
 //    float alpha = exp(instantaneousFlux*50);
-     float alpha = ofMap(features->getSpectralFlux()*30.0f, 0.5, 1, 180, 255);
+     //float alpha = ofMap(features->getSpectralFlux()*30.0f, 0.5, 1, 180, 255);
+     float alpha = ofMap(features->getSpectralDecrease(), 0, 0.5, 180, 255);
      float alpha2 = ofMap(features->getSpectralRollOff()*10.0f, 0, 1, 180, 255);
 //    float alpha = ofMap(ofGetMouseX(), 0, ofGetWidth(), 0, 255);
-
     
-    string msgFlux = "Flux " + ofToString((float)features->getSpectralFlux()*50.0f);
+    if(features->getSpectralDecrease() > tempMax) { tempMax = features->getSpectralDecrease();}
+    
+    //string msgFlux = "Flux " + ofToString((float)features->getSpectralCentroid()*50.0f);
+    string msgFlux = "Flux " + ofToString((float)features->getSpectralDecrease()*50.0f);
     ofDrawBitmapString(msgFlux, 80, ofGetHeight() - 5);
     
     string msgRollOff ="Roll off " + ofToString((float)features->getSpectralRollOff()*50.0f);
@@ -250,17 +266,6 @@ void ofApp::draw(){
     
     string msgPitch ="Pitch " + ofToString((float)features->getPitch()) + " Hz";
     ofDrawBitmapString(msgPitch, 400, ofGetHeight() - 5);
-    
-    //Max pitch chroma
-    float maxPitch = 0;
-    for (int i =0; i<pitchChroma.size(); i++) {
-        if (maxPitch < pitchChroma[i]) {
-            maxPitch = pitchChroma[i];
-        }
-    }
-    
-    string msgMaxPitchChroma ="Max Pitch Chroma " + ofToString((float)maxPitch);
-    ofDrawBitmapString(msgMaxPitchChroma, 550, ofGetHeight() - 5);
     
     string msgTemp ="Temp " + ofToString((float)tempMax);
     ofDrawBitmapString(msgTemp, 550, ofGetHeight() - 45);
@@ -353,37 +358,37 @@ void ofApp::processBlock(float* window, int windowBufferSize, int nChannels){
 
 //---------
 
-void ofApp::audioReceived(float* input, int bufferSize, int nChannels) {
+void ofApp::audioReceived(float* input, int BUFFERSIZE, int nChannels) {
     
     float* inputLeft = input;
     float* inputRight;
     
     if (nChannels == 2) {
-       inputRight = input + bufferSize; //not used for now
+       inputRight = input + BUFFERSIZE; //not used for now
     }
 
     //task : Use circular mapping of pointer to improve performance
     
-    if (soundStream.getTickCount() > overlapMultiple-1) {
-        processBlock(block,bufferSize*overlapMultiple,nChannels);
+    if (soundStream.getTickCount() > OVERLAPMULTIPLE-1) {
+        processBlock(block,BUFFERSIZE*OVERLAPMULTIPLE,nChannels);
         //Shift block data to left
-        copy(block+bufferSize, block+bufferSize*overlapMultiple, &block[0]);
+        copy(block+BUFFERSIZE, block+BUFFERSIZE*OVERLAPMULTIPLE, &block[0]);
         //Push the last hop into the block
-        copy(inputLeft, inputLeft + bufferSize, &block[bufferSize*(overlapMultiple-1)]);
+        copy(inputLeft, inputLeft + BUFFERSIZE, &block[BUFFERSIZE*(OVERLAPMULTIPLE-1)]);
     }
     else {
-        copy(inputLeft, inputLeft + bufferSize, &block[numHops*bufferSize]);
-        numHops++;
+        copy(inputLeft, inputLeft + BUFFERSIZE, &block[NUMHOPS*BUFFERSIZE]);
+        NUMHOPS++;
     }
     
     //Store the input in the leftInput
-    for(int i = 0; i < bufferSize; i++) {
+    for(int i = 0; i < BUFFERSIZE; i++) {
         leftInput[i] = input[i];
     }
     
     //Store the input in the rightInput if stereo -- not being used for now
     if (nChannels==2) {
-        for(int i = bufferSize; i < 2*bufferSize; i++) {
+        for(int i = BUFFERSIZE; i < 2*BUFFERSIZE; i++) {
             rightInput[i] = input[i];
         }
     }
