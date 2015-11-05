@@ -8,18 +8,21 @@
 
 #include "myFeatures.hpp"
 
-myFeatures::myFeatures() {
+void myFeatures::resetFeatures() {
     sumOfFftBins = 0; rms =0; instantaneousFlux = 0; instantaneousFluxPrev = 0;
-    instantaneousRollOff =0;
+    instantaneousRollOff = 0;
     instantaneousRollOffPrev = 0;
-    harmonicsSum = 0; chromaSum = 10;
+    instantaneousPitch = 0;
+    harmonicsSum = 0; chromaSum = 0;
     
     //expose functions to set alpha values
     alphaFlux = 0.5;
     alphaRollOff = 0.5;
 }
 
-myFeatures::myFeatures(int sRate, int bufSize, int numBins) {
+myFeatures::myFeatures(int sRate, int bufSize) {
+    
+    resetFeatures();
     
     bufferSize = bufSize;
     sampleRate = sRate;
@@ -30,7 +33,6 @@ myFeatures::myFeatures(int sRate, int bufSize, int numBins) {
     fft = ofxFft::create(bufferSize, OF_FFT_WINDOW_HAMMING, OF_FFT_FFTW);
     
     fftData.resize(bufferSize);
-    signal.resize(bufferSize);
     fftDataPrev.resize(bufferSize);
     
     fftSize = fft->getBinSize();
@@ -39,9 +41,11 @@ myFeatures::myFeatures(int sRate, int bufSize, int numBins) {
     
     referencePitch = 440; //hard-coded
     curFreq = 0;
-    int length = numBins;
+    int length = fftSize;
     int height = 2;
     pitchChroma.resize(12);
+    finalPitchChroma.resize(12);
+    middlePitchChroma.resize(12);
     
     midiBins = new float*[height];
     midiBins[0] = new float[length];
@@ -49,7 +53,7 @@ myFeatures::myFeatures(int sRate, int bufSize, int numBins) {
     
     float tempCalc = sampleRate/(bufferSize);
     
-    for (unsigned int k = 0; k < numBins; k++) {
+    for (unsigned int k = 0; k < fftSize; k++) {
         
         curFreq = k*tempCalc;
         
@@ -65,6 +69,14 @@ int myFeatures::getNumOfFeatures() {
     return numFeatures;
 }
 
+int myFeatures::getFftSize() {
+    return fftSize;
+}
+
+vector<float> myFeatures::getFftData() {
+    return fftData;
+}
+
 float myFeatures::getSpectralFlux() {
     return instantaneousFlux;
 }
@@ -74,12 +86,22 @@ float myFeatures::getSpectralRollOff() {
 }
 
 vector<float> myFeatures::getPitchChroma() {
-    return pitchChroma;
+    soundMutex.lock();
+    finalPitchChroma = middlePitchChroma;
+    soundMutex.unlock();
+    
+    return finalPitchChroma;
+    
 }
 
-void myFeatures::extractFeatures(vector<float>& input) {
+float myFeatures::getPitch() {
+    return instantaneousPitch;
+}
+
+
+void myFeatures::extractFeatures(float* input, int nChannels) {
+    resetFeatures();
     
-    myFeatures(); //call constructor to reset values
     signal = input;
     
     if (calcRms()) {
@@ -88,6 +110,8 @@ void myFeatures::extractFeatures(vector<float>& input) {
         calcSpectralFlux();
         calcSpectralRollOff();
         calcPitchChroma();
+        
+        fftDataPrev = fftData;
     }
 }
 
@@ -98,13 +122,13 @@ void myFeatures::sumFftBins() {
 }
 
 bool myFeatures::calcRms() {
-    for(int i = 0; i < signal.size(); i++) {
+    for(int i = 0; i < bufferSize; i++) {
         rms = rms + signal[i]*signal[i];
     }
-    rms = sqrt(rms/signal.size());
+    rms = sqrt(rms/bufferSize);
     
     if (rms == 0) {
-        return false; //return flase if Silence is detected
+        return false; //return false if Silence is detected
     }
     return true;
 }
@@ -139,8 +163,6 @@ void myFeatures::calcFft() {
     for(int i = 0; i < fftSize; i++) {
         fftData[i] /= maxValue;
     }
-    
-    fftDataPrev = fftData;
 }
 
 void myFeatures::calcSpectralFlux() {
@@ -152,7 +174,6 @@ void myFeatures::calcSpectralFlux() {
     instantaneousFlux = (1-alphaFlux)*instantaneousFlux + alphaFlux*instantaneousFluxPrev;
     
     instantaneousFluxPrev = instantaneousFlux;
-
 }
 
 void myFeatures::calcSpectralRollOff() {
@@ -202,9 +223,7 @@ void myFeatures::calcPitchChroma() {
     }
 
     int lowestMidiPitch = 21;
-    
-    
-    
+
     for (int j=0; j<12; j++) {
         for (int k=0; k<fftSize; k++) {
             if ((int(midiBins[0][k]) - lowestMidiPitch) % 12 == 0) {
@@ -222,8 +241,21 @@ void myFeatures::calcPitchChroma() {
     
     instantaneousPitch =  maxBinLoc*sampleRate/(bufferSize);
     
+    //Max pitch chroma
+    float maxPitchChroma = 0;
+    for (int i =0; i<pitchChroma.size(); i++) {
+        if (maxPitchChroma < pitchChroma[i]) {
+            maxPitchChroma = pitchChroma[i];
+        }
+    }
+    
+    //Normalize
     for (int m=0; m<12; m++) {
         pitchChroma[m] /= chromaSum;
     }
+    
+    soundMutex.lock();
+    middlePitchChroma = pitchChroma;
+    soundMutex.unlock();
 }
 

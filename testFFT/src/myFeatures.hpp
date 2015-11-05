@@ -15,32 +15,38 @@
 
 class myFeatures {
 public:
-    myFeatures(int,int,int); //Constructor
+    myFeatures(int,int); //Constructor
     myFeatures(); //Constructor
     
-    void extractFeatures(vector<float> &); //processes FFT data, time domain signal, and calculates features //calls other private functions to calculate each features
+    void extractFeatures(float*,int); //processes FFT data, time domain signal, and calculates features //calls other private functions to calculate each features
     
     int getNumOfFeatures();
+    int getFftSize();
+    vector<float> getFftData();
     float getSpectralFlux();
     float getSpectralRollOff();
     vector<float> getPitchChroma();
+    float getPitch();
     
 private:
     int numFeatures = 6;
     
     ofxFft* fft;
+    ofMutex soundMutex;
     
-    int fftSize, sampleRate, bufferSize, overlapMultiple;
-    vector <float> signal, fftData, fftDataPrev, pitchChroma;
+    int fftSize, sampleRate, bufferSize;
+    float* signal;
+    vector <float> fftData, fftDataPrev, pitchChroma, finalPitchChroma, middlePitchChroma;
     
     float instantaneousFlux, instantaneousFluxPrev, alphaFlux;
     float instantaneousRollOff, instantaneousRollOffPrev, alphaRollOff;
     float instantaneousPitch;
-    float sumOfFftBins,rms,maxBinLoc,MaxBinValue;
+    float sumOfFftBins,rms;
     
     float referencePitch, curFreq, chromaSum, harmonicsSum;
     float** midiBins; //for Pitch Chroma
     
+    void resetFeatures();
     bool calcRms();
     void calcFft();
     void findMaxBin();

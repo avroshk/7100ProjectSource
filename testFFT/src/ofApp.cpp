@@ -3,9 +3,9 @@
 //--------------------------------------------------------------
 void ofApp::setup(){
     
- 
-    
     ofSetVerticalSync(true);
+    
+    deviceId = 2;  // 2 - at home // 3 - at couch
     
     plotHeight = 128;
     bufferSize = 256; //hopSize
@@ -23,59 +23,25 @@ void ofApp::setup(){
         rightInput.assign(bufferSize, 0.0); //size of one hop
     }
     
-    leftWithOverlap.assign(bufferSize*overlapMultiple, 0.0); //size of hop*overlapMultiple
-    
     soundStream.listDevices();
     
     //if you want to set a different device id
-    soundStream.setDeviceID(3); //bear in mind the device id corresponds to all audio devices, including  input-only and output-only devices.
+    soundStream.setDeviceID(deviceId); //bear in mind the device id corresponds to all audio devices, including  input-only and output-only devices.
     
-    //fft = ofxFft::create(bufferSize, OF_FFT_WINDOW_HAMMING);
-    fft = ofxFft::create(bufferSize*overlapMultiple, OF_FFT_WINDOW_HAMMING, OF_FFT_FFTW);
+    features = new myFeatures(sampleRate,bufferSize*overlapMultiple);
     
     block = new float[bufferSize*overlapMultiple];
     
-    drawBins.resize(fft->getBinSize());
-    middleBins.resize(fft->getBinSize());
-    audioBins.resize(fft->getBinSize());
-    spectralFlux.resize(fft->getBinSize());
-    spectralRollOff.resize(fft->getBinSize());
-    fftData.resize(fft->getBinSize());
+    drawBins.resize(features->getFftSize());
+    middleBins.resize(features->getFftSize());
+    audioBins.resize(features->getFftSize());
     pitchChroma.resize(12);
+
     
     //ofSoundStreamSetup(0, 1, this, 44100, bufferSize, 4); //bufferSize is set here
-    
     soundStream.setup(this, nOutputs, nInputs, sampleRate, bufferSize, nBuffers);
     
-    instantaneousFlux = 0;
-    instantaneousFluxPrev = 0;
-    instantaneousRollOff = 0;
-    instantaneousRollOffPrev = 0;
-    instantaneousPitch = 0;
-    
     ofBackground(0, 0, 0);
-    
-    // ------- Pitch chroma setup ------
-    referencePitch = 440;
-    curFreq = 0;
-    int length = fftData.size();
-    int height = 2;
-    
-    midiBins = new float*[height];
-    midiBins[0] = new float[length];
-    midiBins[1] = new float[length];
-    
-    float tempCalc = sampleRate/(bufferSize*overlapMultiple);
-    
-    for (unsigned int k = 0; k < fftData.size(); k++){
-        
-        curFreq = k*tempCalc;
-        
-        if(curFreq == 0)
-            midiBins[0][k] = 0;
-        else
-            midiBins[0][k] = round(69+12*log2f(curFreq/referencePitch));
-    }
     
     // ------ Image setup -----------
     succ = myImage.loadImage("rains.jpg");
@@ -113,14 +79,6 @@ void ofApp::setup(){
 
 }
 //--------------------
-void ofApp::changeDeviceId() {
-    if (micInput == 1) {
-        soundStream.setDeviceID(1);
-    }
-    else {
-        soundStream.setDeviceID(3);
-    }
-}
 
 //--------------------
 void ofApp::getFreshMesh(){
@@ -149,14 +107,7 @@ void ofApp::getFreshMesh(){
 
 //--------------------------------------------------------------
 void ofApp::update(){
-    
-    //Max pitch chroma
-    float maxPitch = 0;
-    for (int i =0; i<pitchChroma.size(); i++) {
-        if (maxPitch < pitchChroma[i]) {
-            maxPitch = pitchChroma[i];
-        }
-    }
+   
     
     //Apply noise to mesh
     //Change vertices
@@ -176,87 +127,7 @@ void ofApp::update(){
             meshGrid.setColor(i , ofColor(255, 255, 255));
         }
     }
-    alphaFactor = 0.5;
-    
-    //Instantaneous Flux ---------------
-    instantaneousFlux = 0;
-    for (unsigned int i = 0; i < spectralFlux.size(); i++){
-        instantaneousFlux = instantaneousFlux + spectralFlux[i];
-//        if(instantaneousFlux < spectralFlux[i]){
-//            instantaneousFlux = spectralFlux[i];
-//        }
-    }
-    //instantaneousFlux = 2*sqrt(instantaneousFlux)/spectralFlux.size();
-    instantaneousFlux = 2*instantaneousFlux/spectralFlux.size();
-    //instantaneousFlux = instantaneousFlux/20;
-    
-    instantaneousFlux = (1-alphaFactor)*instantaneousFlux + alphaFactor*instantaneousFluxPrev;
-    
-    instantaneousFluxPrev = instantaneousFlux;
-    
-    //Instantaneous RollOff ---------------
-    for (unsigned int i = 0; i < spectralRollOff.size(); i++){
-        instantaneousRollOff = instantaneousRollOff + spectralRollOff[i];
-    }
-    instantaneousRollOff = 2*instantaneousRollOff/spectralRollOff.size();
-    
-    instantaneousRollOff = (1-alphaFactor)*instantaneousRollOff + alphaFactor*instantaneousRollOffPrev;
 
-    instantaneousRollOffPrev = instantaneousRollOff;
-    
-    //Find pitch --------------------
-    float maxBinValue = 0;
-    int maxBinLoc = 0;
-    float prevMidiPitch = -1;
-    int curAvgCount = 1;
-    float tempSum = 0;
-
-    
-    for (unsigned int k = 0; k < fftData.size(); k++){
-        
-        midiBins[1][k] = fftData[k];
-        
-        if (k>0) {
-            if(midiBins[0][k-1] == midiBins[0][k]) {
-                curAvgCount++;
-            }
-            else {
-                if(curAvgCount>1) {
-                    for(int i =0;i<curAvgCount; i++){
-                        tempSum += midiBins[1][k-i-1];
-                        midiBins[1][k-i-1] = -1;
-                    }
-                    midiBins[1][k-1] = tempSum/curAvgCount;
-                    curAvgCount = 1;
-                    tempSum = 0;
-                }
-               
-            }
-        }
-        
-        if(maxBinValue < fftData[k]){
-            maxBinValue = fftData[k];
-            maxBinLoc = k;
-        }
-    }
-    
-    float chromaSum = 0;
-    int lowestMidiPitch = 21;
-    
-    for (int j=0; j<12; j++) {
-        for (int k=0; k<fftData.size(); k++) {
-            if ((int(midiBins[0][k]) - lowestMidiPitch) % 12 == 0) {
-                if (midiBins[1][k] != -1) {
-                      chromaSum += midiBins[1][k];
-                }
-            }
-        }
-        pitchChroma[j] = chromaSum;
-        chromaSum = 0;
-        lowestMidiPitch++;
-    }
-    
-    instantaneousPitch =  maxBinLoc*sampleRate/(bufferSize*overlapMultiple);
     
     if(jitterBool){
         
@@ -271,14 +142,14 @@ void ofApp::update(){
             ofVec3f timeOffsets = offsets[j];
             
             
-            if (instantaneousPitch< 2500){
+            if (features->getPitch()< 2500){
                 if (vert.x > 0 && vert.x < 2*628/4) {
                     vert.x += (ofSignedNoise(time*timeScale+timeOffsets.x)) * displacementScale;
                     vert.y += (ofSignedNoise(time*timeScale+timeOffsets.y)) * displacementScale;
                     vert.z += (ofSignedNoise(time*timeScale+timeOffsets.z)) * displacementScale;
                 }
             }
-            else if (instantaneousPitch > 2500){
+            else if (features->getPitch() > 2500){
                 if (vert.x > 2*628/4 && vert.x < 628) {
                     vert.x += (ofSignedNoise(time*timeScale+timeOffsets.x)) * displacementScale;
                     vert.y += (ofSignedNoise(time*timeScale+timeOffsets.y)) * displacementScale;
@@ -289,8 +160,6 @@ void ofApp::update(){
             mesh.setVertex(j, vert);
         }
     }
-    
-    //cout<<(string)soundStream.getTickCount() + " ";
 }
 
 //--------------------------------------------------------------
@@ -335,30 +204,6 @@ void ofApp::draw(){
             ofEndShape(false);
         ofPopMatrix();
     ofPopStyle();
-    /*--
-    // draw the left channel with overlap:
-    ofPushStyle();
-        ofPushMatrix();
-            ofTranslate(16, 400, 0);
-            
-            ofSetColor(225);
-            ofDrawBitmapString("Input Channel with overlap", 4, 18);
-            
-            ofSetLineWidth(1);
-            ofRect(0, 0, 512, 200);
-            
-            ofSetColor(245, 58, 135);
-            ofSetLineWidth(3);
-            
-            ofBeginShape();
-            for (unsigned int i = 0; i < leftWithOverlap.size(); i++){
-                ofVertex(i/2, 100 -leftWithOverlap[i]*45.0f);
-            }
-            
-            ofEndShape(false);
-        ofPopMatrix();
-    ofPopStyle();
-    */
     
     // draw the pitch chroma:
     ofPushStyle();
@@ -375,8 +220,9 @@ void ofApp::draw(){
     ofSetColor(245, 58, 135);
     ofSetLineWidth(3);
     string pitches[] = {"A","A#","B","C","C#","D","D#","E","F","F#","G","G#"};
+    pitchChroma = features->getPitchChroma();
     for(int i =0; i<12;i++){
-        ofRect(0+40*i,0,40, pitchChroma[i]*50);
+        ofRect(0+40*i,0,40, pitchChroma[i]*200);
         ofDrawBitmapString(pitches[i], 0+40*i,-4);
     }
     
@@ -388,21 +234,21 @@ void ofApp::draw(){
 
 //    float alpha = ofMap(exp(instantaneousFlux*50.0f), 1, 50, 180, 255);
 //    float alpha = exp(instantaneousFlux*50);
-     float alpha = ofMap(instantaneousFlux*30.0f, 0.5, 1, 180, 255);
-     float alpha2 = ofMap(instantaneousRollOff*10.0f, 0, 1, 180, 255);
+     float alpha = ofMap(features->getSpectralFlux()*30.0f, 0.5, 1, 180, 255);
+     float alpha2 = ofMap(features->getSpectralRollOff()*10.0f, 0, 1, 180, 255);
 //    float alpha = ofMap(ofGetMouseX(), 0, ofGetWidth(), 0, 255);
 
     
-    string msgFlux = "Flux " + ofToString((float)instantaneousFlux*50.0f);
+    string msgFlux = "Flux " + ofToString((float)features->getSpectralFlux()*50.0f);
     ofDrawBitmapString(msgFlux, 80, ofGetHeight() - 5);
     
-    string msgRollOff ="Roll off " + ofToString((float)instantaneousRollOff*50.0f);
+    string msgRollOff ="Roll off " + ofToString((float)features->getSpectralRollOff()*50.0f);
     ofDrawBitmapString(msgRollOff, 80, ofGetHeight() - 15);
     
     string msgAlpha = "Alpha " + ofToString((float) alpha2);
     ofDrawBitmapString(msgAlpha, 250, ofGetHeight() - 5);
     
-    string msgPitch ="Pitch " + ofToString((float)instantaneousPitch) + " Hz";
+    string msgPitch ="Pitch " + ofToString((float)features->getPitch()) + " Hz";
     ofDrawBitmapString(msgPitch, 400, ofGetHeight() - 5);
     
     //Max pitch chroma
@@ -496,65 +342,14 @@ void ofApp::plot(vector<float>& buffer, float scale, float offset) {
 
 void ofApp::processBlock(float* window, int windowBufferSize, int nChannels){
     
-    float maxValue = 0;
+    features->extractFeatures(window,nChannels);
     
-    for(int i = 0; i < windowBufferSize; i++) {
-        if(abs(window[i]) > maxValue) {
-            maxValue = abs(window[i]);
-        }
-        //Store the input in the leftInput
-        leftWithOverlap[i] = window[i];
-    }
-    
-    for(int i = 0; i < windowBufferSize; i++) {
-        window[i] /= maxValue;
-    }
-    
-    fft->setSignal(window);
-    
-    float* curFft = fft->getAmplitude();
-    //    memcpy(&audioBins[0], curFft, sizeof(float) * fft->getBinSize());
-    copy(curFft, curFft + fft->getBinSize(), audioBins.begin());
-    
-    
-    maxValue = 0;
-    for(int i = 0; i < fft->getBinSize(); i++) {
-        if(abs(audioBins[i]) > maxValue) {
-            maxValue = abs(audioBins[i]);
-        }
-    }
-    for(int i = 0; i < fft->getBinSize(); i++) {
-        audioBins[i] /= maxValue;
-    }
-    
-    fftData = audioBins;
-    
-    //Calculate Spectral flux
-    if(soundStream.getTickCount() > 1){ //handle this before sending FFT to myFeatures.
-        for(int i = 0; i < fft->getBinSize(); i++) {
-            spectralFlux[i] = ((middleBins[i]-audioBins[i])*(middleBins[i]-audioBins[i]));
-        }
-    }
-    
-    //Calculate Spectral Roll off
-    
-    if(soundStream.getTickCount() > 1){
-        for(int i = 0; i < fft->getBinSize(); i++) {
-            spectralRollOff[i] = abs(audioBins[i]);
-            //------ temp
-            if(tempMax < spectralRollOff[i]) {
-                tempMax = spectralRollOff[i];
-            }
-            //------ temp
-        }
-    }
+    audioBins = features->getFftData();
     
     soundMutex.lock();
     middleBins = audioBins;
     soundMutex.unlock();
-    
 }
-
 
 //---------
 
@@ -566,41 +361,34 @@ void ofApp::audioReceived(float* input, int bufferSize, int nChannels) {
     if (nChannels == 2) {
        inputRight = input + bufferSize; //not used for now
     }
+
+    //task : Use circular mapping of pointer to improve performance
     
-    rms = 0;
-    if(soundStream.getTickCount() > 1) {
-        for(int i = 0; i < bufferSize; i++) {
-            rms = rms + input[i]*input[i];
-        }
-        rms = sqrt(rms/bufferSize);
-        if (rms != 0) { // check for silence
-            
-            //Use circular mapping of pointer to improve performance
-            if (soundStream.getTickCount() > overlapMultiple-1) {
-                processBlock(block,bufferSize*overlapMultiple,nChannels);
-                //Shift block data to left
-                copy(block+bufferSize, block+bufferSize*overlapMultiple, &block[0]);
-                //Get the last hop data into the block
-                copy(inputLeft, inputLeft + bufferSize, &block[bufferSize*(overlapMultiple-1)]);
-            }
-            else {
-                copy(inputLeft, inputLeft + bufferSize, &block[numHops*bufferSize]);
-                numHops++;
-            }
-            
-            //Store the input in the leftInput
-            for(int i = 0; i < bufferSize; i++) {
-                leftInput[i] = input[i];
-            }
-            
-            //Store the input in the rightInput if stereo -- not being used for now
-            if (nChannels==2) {
-                for(int i = bufferSize; i < 2*bufferSize; i++) {
-                    rightInput[i] = input[i];
-                }
-            }
+    if (soundStream.getTickCount() > overlapMultiple-1) {
+        processBlock(block,bufferSize*overlapMultiple,nChannels);
+        //Shift block data to left
+        copy(block+bufferSize, block+bufferSize*overlapMultiple, &block[0]);
+        //Push the last hop into the block
+        copy(inputLeft, inputLeft + bufferSize, &block[bufferSize*(overlapMultiple-1)]);
+    }
+    else {
+        copy(inputLeft, inputLeft + bufferSize, &block[numHops*bufferSize]);
+        numHops++;
+    }
+    
+    //Store the input in the leftInput
+    for(int i = 0; i < bufferSize; i++) {
+        leftInput[i] = input[i];
+    }
+    
+    //Store the input in the rightInput if stereo -- not being used for now
+    if (nChannels==2) {
+        for(int i = bufferSize; i < 2*bufferSize; i++) {
+            rightInput[i] = input[i];
         }
     }
+    
+    
     
 }
 //--------------------------------------------------------------
@@ -625,10 +413,6 @@ void ofApp::keyPressed(int key){
     }
     if (key == 'k') {
         getFreshMesh();
-    }
-    if (key == 'd') {
-        micInput = ! micInput;
-        changeDeviceId();
     }
 }
 

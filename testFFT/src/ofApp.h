@@ -2,6 +2,7 @@
 
 #include "ofMain.h"
 #include "ofxFft.h"
+#include "myFeatures.hpp"
 
 class ofApp : public ofBaseApp{
 
@@ -28,26 +29,21 @@ class ofApp : public ofBaseApp{
     void getFreshMesh();
     
     //Graphs ----------
-    int plotHeight, bufferSize, overlapMultiple, nBuffers, sampleRate, nInputs, nOutputs;
+    int plotHeight, bufferSize, overlapMultiple, nBuffers, sampleRate, numHops, nInputs, nOutputs, deviceId;
     
     //Audio --------
-    bool micInput = 0;
-    ofxFft* fft;
+    
+    myFeatures *features;
+
     ofSoundStream soundStream;
 
     ofMutex soundMutex;
-    vector<float> drawBins, middleBins, audioBins, leftInput, rightInput, leftWithOverlap, spectralFlux, spectralRollOff, fftData;
     
-    vector<float> pitchChroma;
-   
-    float instantaneousFlux, instantaneousFluxPrev, instantaneousRollOff, instantaneousRollOffPrev,instantaneousPitch, curFreq, referencePitch, alphaFactor, rms;
-    
-    int numHops;
+    vector<float> drawBins, middleBins, audioBins, leftInput, rightInput, pitchChroma;
     
     float* block;
-    float** midiBins; //for Pitch Chroma
     
-    //image -----------
+    //Mesh -----------
     ofFbo fbo;
     ofPixels fboPixels;
     ofMesh mesh, meshGrid;
