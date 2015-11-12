@@ -6,7 +6,7 @@ void ofApp::setup(){
     ofSetVerticalSync(true);
     
     DEVICEID = 2;  // 2 - at home // 3 - at couch - SoundFlower
-    //DEVICEID = 1;  // 1 - at home // 2 - at couch - Microphone Input
+//    DEVICEID = 1;  // 0 - at home // 1 - at couch - Microphone Input
 
     
     plotHeight = 128;
@@ -35,9 +35,9 @@ void ofApp::setup(){
     
     block = new float[BUFFERSIZE*OVERLAPMULTIPLE];
     
-    drawBins.resize(features->getFftSize());
-    middleBins.resize(features->getFftSize());
-    audioBins.resize(features->getFftSize());
+    drawBins.resize(*features->getFftSize());
+    middleBins.resize(*features->getFftSize());
+    audioBins.resize(*features->getFftSize());
     pitchChroma.resize(12);
     
     // ------ Sound Setup --------
@@ -48,15 +48,20 @@ void ofApp::setup(){
     
     // ------ Feature to Effect Mapping setup -----
 
-    featureMap = new myMappingVector(features->getNumOfFeatures(),2);
+    featureMap = new myMappingVector(*features->getNumOfFeatures(),2);
     featureMap->routeFeature(1, 0, 0);
     featureMap->routeFeature(1, 1, 1);
     featureMap->routeFeature(0.8, 3, 0);
     
     // ------ Image setup -----------
-    succ = myImage.loadImage("rains.jpg");
+    
+    effects = new myEffects("Helen.jpg");
+    
+    myImage = effects->getImage();
+    
+//    succ = myImage.loadImage("Helen.jpg");
 
-    getFreshMesh();
+//    getFreshMesh();
     
     fbo.allocate(784, 628);
     // clear fbo
@@ -64,115 +69,28 @@ void ofApp::setup(){
     ofClear(255,255,255, 0);
     fbo.end();
     
-    jitterCounter = 0;
-    
-    //Set up vertices
-    for (int y=0; y<H; y++) {
-        for (int x=0; x<W; x++) {
-            meshGrid.addVertex(ofPoint((x - W/2) * meshSize, (y - H/2) * meshSize, 0 )); // adding texure coordinates allows us to bind textures to it later // --> this could be made into a function so that textures can be swapped / updated
-            meshGrid.addTexCoord(ofPoint(x * ( imageWidth/ W), y * (imageHeight / H)));
-            meshGrid.addColor(ofColor(255, 255, 255));
-        }
-    }
-    
-    //Set up triangles' indices
-    for (int y=0; y<H-1; y++) {
-        for (int x=0; x<W-1; x++) {
-            int i1 = x + W * y;
-            int i2 = x+1 + W * y;
-            int i3 = x + W * (y+1);
-            int i4 = x+1 + W * (y+1);
-            meshGrid.addTriangle( i1, i2, i3 );
-            meshGrid.addTriangle( i2, i4, i3 );
-        }
-    }
-
-}
-//--------------------
-
-//--------------------
-void ofApp::getFreshMesh(){
-    float intensityThreshold = 175.0;
-    
-    int w = myImage.getWidth();
-    int h = myImage.getHeight();
-    
-    for (int x=0; x<w; ++x) {
-        for (int y=0; y<h; ++y) {
-            ofColor c = myImage.getColor(x, y);
-            float intensity = c.getLightness();
-            
-            if (intensity >= intensityThreshold) {
-                ofVec3f pos(x, y);
-                mesh.addVertex(pos);
-                mesh.addTexCoord(pos);
-                //for jitter
-                offsets.push_back(ofVec3f(ofRandom(0,100000), ofRandom(0,100000), ofRandom(0,100000)));
-            }
-        }
-    }
-    
-    //cout<< mesh.getNumVertices();
 }
 
 //--------------------------------------------------------------
 void ofApp::update(){
-    // ------ Get feature ---
+    // ------ Get features -------
     float feature1 = featureMap->getFeatureForEffect(0, features->getNormalizedFeatureSet());
     float feature2 = featureMap->getFeatureForEffect(1, features->getNormalizedFeatureSet());
     
+    features->setAlphaFlux(*features->getSpectralFlatness());
     
-    //Apply noise to mesh
-    //Change vertices
-    for (int y=0; y<H; y++) {
-        for (int x=0; x<W; x++) {
-            
-            //Vertex index
-            int i = x + W * y;
-            ofPoint p = meshGrid.getVertex( i );
-            
-            //Change z-coordinate of vertex
-            
-            p.z = ofNoise(x * 0.05, y * 0.05, ofGetElapsedTimef() * 0.5) * 100;
-            meshGrid.setVertex( i, p );
-            
-            //Change color of vertex
-            meshGrid.setColor(i , ofColor(255, 255, 255));
-        }
-    }
-
+    effects->applyNoiseToMesh(ofMap(*features->getSpectralRollOff(),0,0.5,0,0.05),ofMap(*features->getSpectralDecrease(),0,0.5,0,0.005));
     
-    if(jitterBool){
-        
-        for (int j=0; j<mesh.getNumVertices(); ++j) {
-            ofVec3f vert = mesh.getVertex(j);
-            
-            jitterCounter++;
-            
-            float time = ofGetElapsedTimef();
-            float timeScale = 5.0;
-            float displacementScale = 0.75; // keyword - this parameter can be controlled
-            ofVec3f timeOffsets = offsets[j];
-            
-            
-            if (features->getPitch()< 2500){
-                if (vert.x > 0 && vert.x < 2*628/4) {
-                    vert.x += (ofSignedNoise(time*timeScale+timeOffsets.x)) * displacementScale;
-                    vert.y += (ofSignedNoise(time*timeScale+timeOffsets.y)) * displacementScale;
-                    vert.z += (ofSignedNoise(time*timeScale+timeOffsets.z)) * displacementScale;
-                }
-            }
-            else if (features->getPitch() > 2500){
-                if (vert.x > 2*628/4 && vert.x < 628) {
-                    vert.x += (ofSignedNoise(time*timeScale+timeOffsets.x)) * displacementScale;
-                    vert.y += (ofSignedNoise(time*timeScale+timeOffsets.y)) * displacementScale;
-                    vert.z += (ofSignedNoise(time*timeScale+timeOffsets.z)) * displacementScale;
-                }
-            }
-            
-            mesh.setVertex(j, vert);
-        }
+//    effects->applyNoiseToMesh(*features->getSpectralRollOff(),*features->getSpectralDecrease());
+    
+    effects->applyJitterToMesh(*features->getPitchChromaCrestFactor());
+    
+    meshGrid = effects->getMeshGrid();
+    
+    if (features->spectralFluxLevelCrossingRateChanged()) {
+        effects->refreshMesh();
     }
+    
 }
 
 //--------------------------------------------------------------
@@ -243,28 +161,31 @@ void ofApp::draw(){
     ofPopStyle();
 
     
-    // flux :--------------------------------------------------
+    // effects :--------------------------------------------------
 
 //    float alpha = ofMap(exp(instantaneousFlux*50.0f), 1, 50, 180, 255);
 //    float alpha = exp(instantaneousFlux*50);
      //float alpha = ofMap(features->getSpectralFlux()*30.0f, 0.5, 1, 180, 255);
-     float alpha = ofMap(features->getSpectralDecrease(), 0, 0.5, 180, 255);
-     float alpha2 = ofMap(features->getSpectralRollOff()*10.0f, 0, 1, 180, 255);
+//     float alpha = ofMap(features->getSpectralDecrease(), 0, 0.5, 180, 255); // good feature mapping
+//    float alpha = ofMap(features->getSpectralFlatness(), 0, 0.5, 180, 255); //no bad
+//     float alpha = ofMap(features->getPitchChromaFlatness(), 0, 0.5, 180, 255); // good feature (kinetoscope effect)
+    float alpha = ofMap(*features->getPitchChromaCrestFactor(), 0, 0.7, 180, 255);
+     float alpha2 = ofMap(*features->getSpectralRollOff()*10.0f, 0, 1, 180, 255);
 //    float alpha = ofMap(ofGetMouseX(), 0, ofGetWidth(), 0, 255);
     
-    if(features->getSpectralDecrease() > tempMax) { tempMax = features->getSpectralDecrease();}
+    if(*features->getPitchChromaCrestFactor() > tempMax) { tempMax = *features->getPitchChromaCrestFactor();}
     
     //string msgFlux = "Flux " + ofToString((float)features->getSpectralCentroid()*50.0f);
-    string msgFlux = "Flux " + ofToString((float)features->getSpectralDecrease()*50.0f);
+    string msgFlux = "Flux " + ofToString((float)*features->getSpectralFlux()*100.0f);
     ofDrawBitmapString(msgFlux, 80, ofGetHeight() - 5);
     
-    string msgRollOff ="Roll off " + ofToString((float)features->getSpectralRollOff()*50.0f);
+    string msgRollOff ="Roll off " + ofToString((float)*features->getSpectralRollOff()*50.0f);
     ofDrawBitmapString(msgRollOff, 80, ofGetHeight() - 15);
     
     string msgAlpha = "Alpha " + ofToString((float) alpha2);
     ofDrawBitmapString(msgAlpha, 250, ofGetHeight() - 5);
     
-    string msgPitch ="Pitch " + ofToString((float)features->getPitch()) + " Hz";
+    string msgPitch ="Pitch " + ofToString((float)*features->getPitch()) + " Hz";
     ofDrawBitmapString(msgPitch, 400, ofGetHeight() - 5);
     
     string msgTemp ="Temp " + ofToString((float)tempMax);
@@ -281,6 +202,7 @@ void ofApp::draw(){
     }
     //    ofSetColor(255,255,255, 180);
 
+    
     for(int x = 0; x<mesh.getNumVertices(); x++){
         
         
@@ -293,14 +215,12 @@ void ofApp::draw(){
 //            c.setBrightness(alpha);
 //            
 //            myImage.setColor(pos.x, pos.y, c);
-           
         }
     }
-  myImage.rotate90(0);
-    
+  myImage->rotate90(0);
     
     if (zeeBool){
-        myImage.draw(0,0,alpha-80);
+        myImage->draw(0,0,alpha-80);
         for(int x = 0; x<mesh.getNumVertices(); x++){
             ofVec3f pos = mesh.getVertex(x);
             pos.z=alpha-80;
@@ -308,21 +228,21 @@ void ofApp::draw(){
         }
     }
     else{
-        myImage.draw(0,0);
-        
+        myImage->draw(0,0);
     }
     
-    myImage.bind();
+    effects->applyAlphaToTexture(alpha2, alpha);
     
-    //ofPushMatrix(); //Store the coordinate system
-//    ofTranslate( ofGetWidth()/2, ofGetHeight()/2, 0 );  //Move the coordinate center to screen's center
-//    //meshGrid.drawWireframe();
-//    meshGrid.draw();
-//    ofPopMatrix(); //Restore the coordinate system
-//
+    myImage->bind();
+    
+    ofPushMatrix(); //Store the coordinate system
+    ofTranslate( ofGetWidth()/2, ofGetHeight()/2, 0 );  //Move the coordinate center to screen's center
+//    meshGrid.drawWireframe();
+    meshGrid->draw();
+    ofPopMatrix(); //Restore the coordinate system
     
     mesh.draw();
-    myImage.unbind();
+    myImage->unbind();
     
     fbo.end();
     
@@ -367,7 +287,7 @@ void ofApp::audioReceived(float* input, int BUFFERSIZE, int nChannels) {
        inputRight = input + BUFFERSIZE; //not used for now
     }
 
-    //task : Use circular mapping of pointer to improve performance
+    //task : Use circular mapping to pointer to improve performance
     
     if (soundStream.getTickCount() > OVERLAPMULTIPLE-1) {
         processBlock(block,BUFFERSIZE*OVERLAPMULTIPLE,nChannels);
@@ -392,9 +312,6 @@ void ofApp::audioReceived(float* input, int BUFFERSIZE, int nChannels) {
             rightInput[i] = input[i];
         }
     }
-    
-    
-    
 }
 //--------------------------------------------------------------
 
@@ -405,19 +322,12 @@ void ofApp::keyPressed(int key){
     }
     if (key == 'n') {
         zeeBool = ! zeeBool;
-//        for(int x = 0; x<mesh.getNumVertices(); x++){
-//            ofVec3f pos = mesh.getVertex(x);
-//            pos.z=0;
-//            mesh.setVertex(x, pos);
-//        }
-        getFreshMesh();
     }
     if (key == 'j') {
-        jitterBool = ! jitterBool;
-        getFreshMesh();
+        drawBool = ! drawBool;
     }
     if (key == 'k') {
-        getFreshMesh();
+
     }
 }
 

@@ -4,6 +4,7 @@
 #include "ofxFft.h"
 #include "myFeatures.hpp"
 #include "myMappingVector.hpp"
+#include "myEffects.hpp"
 
 class ofApp : public ofBaseApp{
 
@@ -48,21 +49,17 @@ class ofApp : public ofBaseApp{
     myMappingVector *featureMap;
     
     //Mesh -----------
+    
+    myEffects *effects;
+    ofMesh *meshGrid;
+    ofMesh mesh;
+    
     ofFbo fbo;
     ofPixels fboPixels;
-    ofMesh mesh, meshGrid;
     
-    vector<ofVec3f> offsets;
-    int jitterCounter;
+    bool succ,alphaBool,zeeBool,drawBool;
+    ofImage* myImage;
     
-    bool succ,alphaBool,zeeBool,jitterBool;
-    ofImage myImage;
-    
-    int imageHeight = 628;
-    int imageWidth = 784;
-    int W = 100; //Grid size
-    int H = 100;
-    int meshSize = 6;
     //---- temp
     float tempMax = 0;
     //---- temp
