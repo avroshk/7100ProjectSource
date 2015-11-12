@@ -51,6 +51,9 @@ public:
     void setAlphaFlux(float);
     void setAlphaRollOff(float);
     
+    int LCRFluxThreshold = 20; //default
+    float instantaneousFluxThreshold=0.5; //default
+    
 private:
     int numFeatures = 10;
     

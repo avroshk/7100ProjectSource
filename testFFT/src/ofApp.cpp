@@ -7,6 +7,7 @@ void ofApp::setup(){
     
     DEVICEID = 2;  // 2 - at home // 3 - at couch - SoundFlower
 //    DEVICEID = 1;  // 0 - at home // 1 - at couch - Microphone Input
+    //the device id corresponds to all audio devices, including  input-only and output-only devices.
 
     
     plotHeight = 128;
@@ -28,12 +29,14 @@ void ofApp::setup(){
     
     soundStream.listDevices();
     
-    //if you want to set a different device id
-    soundStream.setDeviceID(DEVICEID); //bear in mind the device id corresponds to all audio devices, including  input-only and output-only devices.
-    
-    features = new myFeatures(SAMPLERATE,BUFFERSIZE*OVERLAPMULTIPLE);
+    soundStream.setDeviceID(DEVICEID);
     
     block = new float[BUFFERSIZE*OVERLAPMULTIPLE];
+    
+    // ------ Features setup -------
+    features = new myFeatures(SAMPLERATE,BUFFERSIZE*OVERLAPMULTIPLE);
+    features->LCRFluxThreshold = 40;
+    features->instantaneousFluxThreshold = 0.8;
     
     drawBins.resize(*features->getFftSize());
     middleBins.resize(*features->getFftSize());
@@ -55,14 +58,11 @@ void ofApp::setup(){
     
     // ------ Image setup -----------
     
-    effects = new myEffects("Helen.jpg");
+    effects = new myEffects("helen.jpg");
     
     myImage = effects->getImage();
     
-//    succ = myImage.loadImage("Helen.jpg");
-
-//    getFreshMesh();
-    
+    // ------ Frame buffer object setup -----
     fbo.allocate(784, 628);
     // clear fbo
     fbo.begin();
@@ -79,13 +79,12 @@ void ofApp::update(){
     
     features->setAlphaFlux(*features->getSpectralFlatness());
     
-    effects->applyNoiseToMesh(ofMap(*features->getSpectralRollOff(),0,0.5,0,0.05),ofMap(*features->getSpectralDecrease(),0,0.5,0,0.005));
-    
-//    effects->applyNoiseToMesh(*features->getSpectralRollOff(),*features->getSpectralDecrease());
+    effects->applyNoiseToMesh(ofMap(*features->getSpectralRollOff(),0,0.5,0,0.05),ofMap(*features->getSpectralDecrease(),0,0.5,0,0.005),ofMap(*features->getSpectralCentroid(), 0, 360, 0.05, 0.35));
     
     effects->applyJitterToMesh(*features->getPitchChromaCrestFactor());
     
     meshGrid = effects->getMeshGrid();
+    mesh1 = effects->getMesh();
     
     if (features->spectralFluxLevelCrossingRateChanged()) {
         effects->refreshMesh();
@@ -100,98 +99,100 @@ void ofApp::draw(){
     ofClear(255,255,255, 0);
     fbo.end();
     
-    ofSetColor(255);
-    ofPushMatrix();
-    ofTranslate(16, 16);
-    
-    soundMutex.lock();
-    drawBins = middleBins;
-    soundMutex.unlock();
-    
-    ofDrawBitmapString("Frequency Domain", 0, 0);
-    plot(drawBins, -plotHeight, plotHeight / 2);
-    ofPopMatrix();
-    string msg = ofToString((int) ofGetFrameRate()) + " fps";
-    ofDrawBitmapString(msg, ofGetWidth() - 80, ofGetHeight() - 20);
-    
-    // draw the left channel:
-    ofPushStyle();
-        ofPushMatrix();
-            ofTranslate(16, 200, 0);
-            
-            ofSetColor(225);
-            ofDrawBitmapString("Input Channel", 4, 18);
-            
-            ofSetLineWidth(1);
-            ofRect(0, 0, 512, 200);
-            
-            ofSetColor(245, 58, 135);
-            ofSetLineWidth(3);
-    
-            ofBeginShape();
-            for (unsigned int i = 0; i < leftInput.size(); i++){
-                ofVertex(2*i, 100 -leftInput[i]*180.0f);
-            }
-            ofEndShape(false);
-        ofPopMatrix();
-    ofPopStyle();
-    
-    // draw the pitch chroma:
-    ofPushStyle();
-    ofPushMatrix();
-    ofTranslate(16, 440, 0);
-    
-    ofSetColor(225);
-    ofDrawBitmapString("Pitch Chroma", 4, -18);
-    
-    ofSetLineWidth(1);
-    ofRect(0, 0, 480, 160);
-    
-    
-    ofSetColor(245, 58, 135);
-    ofSetLineWidth(3);
-    string pitches[] = {"A","A#","B","C","C#","D","D#","E","F","F#","G","G#"};
-    pitchChroma = features->getPitchChroma();
-    for(int i =0; i<12;i++){
-        ofRect(0+40*i,0,40, pitchChroma[i]*200);
-        ofDrawBitmapString(pitches[i], 0+40*i,-4);
-    }
-    
-    ofPopMatrix();
-    ofPopStyle();
-
-    
     // effects :--------------------------------------------------
-
-//    float alpha = ofMap(exp(instantaneousFlux*50.0f), 1, 50, 180, 255);
-//    float alpha = exp(instantaneousFlux*50);
-     //float alpha = ofMap(features->getSpectralFlux()*30.0f, 0.5, 1, 180, 255);
-//     float alpha = ofMap(features->getSpectralDecrease(), 0, 0.5, 180, 255); // good feature mapping
-//    float alpha = ofMap(features->getSpectralFlatness(), 0, 0.5, 180, 255); //no bad
-//     float alpha = ofMap(features->getPitchChromaFlatness(), 0, 0.5, 180, 255); // good feature (kinetoscope effect)
+    
+    //    float alpha = ofMap(exp(instantaneousFlux*50.0f), 1, 50, 180, 255);
+    //float alpha = ofMap(features->getSpectralFlux()*30.0f, 0.5, 1, 180, 255);
+    //     float alpha = ofMap(features->getSpectralDecrease(), 0, 0.5, 180, 255); // good feature mapping
+    //    float alpha = ofMap(features->getSpectralFlatness(), 0, 0.5, 180, 255); //no bad
+    //     float alpha = ofMap(features->getPitchChromaFlatness(), 0, 0.5, 180, 255); // good feature (kinetoscope effect)
     float alpha = ofMap(*features->getPitchChromaCrestFactor(), 0, 0.7, 180, 255);
-     float alpha2 = ofMap(*features->getSpectralRollOff()*10.0f, 0, 1, 180, 255);
-//    float alpha = ofMap(ofGetMouseX(), 0, ofGetWidth(), 0, 255);
+    float alpha2 = ofMap(*features->getSpectralRollOff()*10.0f, 0, 1, 180, 255);
+    //    float alpha = ofMap(ofGetMouseX(), 0, ofGetWidth(), 0, 255);
     
-    if(*features->getPitchChromaCrestFactor() > tempMax) { tempMax = *features->getPitchChromaCrestFactor();}
+    if(*features->getSpectralCentroid() > tempMax) { tempMax = *features->getSpectralCentroid();}
     
-    //string msgFlux = "Flux " + ofToString((float)features->getSpectralCentroid()*50.0f);
-    string msgFlux = "Flux " + ofToString((float)*features->getSpectralFlux()*100.0f);
-    ofDrawBitmapString(msgFlux, 80, ofGetHeight() - 5);
+    //----------------------------------------------------------
     
-    string msgRollOff ="Roll off " + ofToString((float)*features->getSpectralRollOff()*50.0f);
-    ofDrawBitmapString(msgRollOff, 80, ofGetHeight() - 15);
-    
-    string msgAlpha = "Alpha " + ofToString((float) alpha2);
-    ofDrawBitmapString(msgAlpha, 250, ofGetHeight() - 5);
-    
-    string msgPitch ="Pitch " + ofToString((float)*features->getPitch()) + " Hz";
-    ofDrawBitmapString(msgPitch, 400, ofGetHeight() - 5);
-    
-    string msgTemp ="Temp " + ofToString((float)tempMax);
-    ofDrawBitmapString(msgTemp, 550, ofGetHeight() - 45);
-
-    
+    if (drawBool) {
+        ofSetColor(255);
+        ofPushMatrix();
+        ofTranslate(16, 16);
+        
+        soundMutex.lock();
+        drawBins = middleBins;
+        soundMutex.unlock();
+        
+        ofDrawBitmapString("Frequency Domain", 0, 0);
+        plot(drawBins, -plotHeight, plotHeight / 2);
+        ofPopMatrix();
+        string msg = ofToString((int) ofGetFrameRate()) + " fps";
+        ofDrawBitmapString(msg, ofGetWidth() - 80, ofGetHeight() - 20);
+        
+        // draw the left channel:
+        ofPushStyle();
+        ofPushMatrix();
+        ofTranslate(16, 200, 0);
+        
+        ofSetColor(225);
+        ofDrawBitmapString("Input Channel", 4, 18);
+        
+        ofSetLineWidth(1);
+        ofRect(0, 0, 512, 200);
+        
+        ofSetColor(245, 58, 135);
+        ofSetLineWidth(3);
+        
+        ofBeginShape();
+        for (unsigned int i = 0; i < leftInput.size(); i++){
+            ofVertex(2*i, 100 -leftInput[i]*180.0f);
+        }
+        ofEndShape(false);
+        ofPopMatrix();
+        ofPopStyle();
+        
+        // draw the pitch chroma:
+        ofPushStyle();
+        ofPushMatrix();
+        ofTranslate(16, 440, 0);
+        
+        ofSetColor(225);
+        ofDrawBitmapString("Pitch Chroma", 4, -18);
+        
+        ofSetLineWidth(1);
+        ofRect(0, 0, 480, 160);
+        
+        
+        ofSetColor(245, 58, 135);
+        ofSetLineWidth(3);
+        string pitches[] = {"A","A#","B","C","C#","D","D#","E","F","F#","G","G#"};
+        pitchChroma = features->getPitchChroma();
+        for(int i =0; i<12;i++){
+            ofRect(0+40*i,0,40, pitchChroma[i]*200);
+            ofDrawBitmapString(pitches[i], 0+40*i,-4);
+        }
+        
+        ofPopMatrix();
+        ofPopStyle();
+        
+        
+        //string msgFlux = "Flux " + ofToString((float)features->getSpectralCentroid()*50.0f);
+        string msgFlux = "Flux " + ofToString((float)*features->getSpectralFlux()*100.0f);
+        ofDrawBitmapString(msgFlux, 80, ofGetHeight() - 5);
+        
+        string msgRollOff ="Roll off " + ofToString((float)*features->getSpectralRollOff()*50.0f);
+        ofDrawBitmapString(msgRollOff, 80, ofGetHeight() - 15);
+        
+        string msgAlpha = "Alpha " + ofToString((float) alpha2);
+        ofDrawBitmapString(msgAlpha, 250, ofGetHeight() - 5);
+        
+        string msgPitch ="Pitch " + ofToString((float)*features->getPitch()) + " Hz";
+        ofDrawBitmapString(msgPitch, 400, ofGetHeight() - 5);
+        
+        string msgTemp ="Temp " + ofToString((float)tempMax);
+        ofDrawBitmapString(msgTemp, 550, ofGetHeight() - 45);
+        
+    }
 
     fbo.begin();
     if (alphaBool){
@@ -209,12 +210,12 @@ void ofApp::draw(){
         ofVec3f pos = mesh.getVertex(x);
         
         if (pos.x > 300 and pos.x < 500){
-//            ofColor c = myImage.getColor(pos.x,pos.y);
-//            //        float intensity = c.getLightness();
-//            
-//            c.setBrightness(alpha);
-//            
-//            myImage.setColor(pos.x, pos.y, c);
+            ofColor c = myImage->getColor(pos.x,pos.y);
+            //        float intensity = c.getLightness();
+            
+            c.setBrightness(alpha);
+            
+            myImage->setColor(pos.x, pos.y, c);
         }
     }
   myImage->rotate90(0);
@@ -239,9 +240,10 @@ void ofApp::draw(){
     ofTranslate( ofGetWidth()/2, ofGetHeight()/2, 0 );  //Move the coordinate center to screen's center
 //    meshGrid.drawWireframe();
     meshGrid->draw();
+//    mesh1->draw();
     ofPopMatrix(); //Restore the coordinate system
     
-    mesh.draw();
+//    mesh.draw();
     myImage->unbind();
     
     fbo.end();

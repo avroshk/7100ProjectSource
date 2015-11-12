@@ -25,16 +25,32 @@ ofMesh* myEffects::getMeshGrid() {
     return &meshGrid;
 }
 
+ofMesh* myEffects::getMesh() {
+    return &mesh;
+}
+
 void myEffects::setUpMeshVertices() {
+//    float intensityThreshold = 50;
+    
     //Set up vertices
     for (int y=0; y<H; y++) {
         for (int x=0; x<W; x++) {
             meshGrid.addVertex(ofPoint((x - W/2) * meshSize, (y - H/2) * meshSize, 0 )); // adding texure coordinates allows us to bind textures to it later // --> this could be made into a function so that textures can be swapped / updated
+            
+//            ofColor c = myImage.getColor(x, y);
+//            float intensity = c.getLightness();
+//            if (intensity >= intensityThreshold) {
+//                mesh.addVertex(ofPoint((x - W/2) * meshSize, (y - H/2) * meshSize, 0 ));
+//                mesh.addTexCoord(ofPoint(x * ( imageWidth/ W), y * (imageHeight / H)));
+//                mesh.addColor(ofColor(255,0,0));
+//            }
+            
             meshGrid.addTexCoord(ofPoint(x * ( imageWidth/ W), y * (imageHeight / H)));
             meshGrid.addColor(ofColor(255, 255, 255));
             offsets.push_back(ofVec3f(ofRandom(0,100000), ofRandom(0,100000), ofRandom(0,100000)));
         }
     }
+    
 }
 
 void myEffects::setUpTriangleIndices() {
@@ -47,11 +63,15 @@ void myEffects::setUpTriangleIndices() {
             int i4 = x+1 + W * (y+1);
             meshGrid.addTriangle( i1, i2, i3 );
             meshGrid.addTriangle( i2, i4, i3 );
+            
+//            mesh.addTriangle( i1, i2, i3 );
+//            mesh.addTriangle( i2, i4, i3 );
         }
     }
+    
 }
 
-void myEffects::applyNoiseToMesh(float feature1, float feature2) {
+void myEffects::applyNoiseToMesh(float feature1, float feature2, float feature3) {
     //Apply noise to mesh
     //Change vertices
     for (int y=0; y<H; y++) {

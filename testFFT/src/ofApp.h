@@ -52,7 +52,7 @@ class ofApp : public ofBaseApp{
     
     myEffects *effects;
     ofMesh *meshGrid;
-    ofMesh mesh;
+    ofMesh mesh, *mesh1;
     
     ofFbo fbo;
     ofPixels fboPixels;

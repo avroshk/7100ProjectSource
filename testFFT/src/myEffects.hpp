@@ -15,12 +15,13 @@
 class myEffects {
 public:
     myEffects(string); //constructor
-    void applyNoiseToMesh(float,float);
+    void applyNoiseToMesh(float,float,float);
     void applyAlphaToTexture(float,float);
     void applyJitterToMesh(float);
     void refreshMesh();
     ofImage* getImage();
     ofMesh* getMeshGrid();
+    ofMesh* getMesh();
     
 private:
     ofImage myImage;

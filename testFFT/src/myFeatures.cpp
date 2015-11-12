@@ -136,7 +136,7 @@ void myFeatures::setAlphaRollOff(float value) {
 }
 
 bool myFeatures::spectralFluxLevelCrossingRateChanged() {
-    if (LCRFlux > 20) {
+    if (LCRFlux > LCRFluxThreshold) {
         LCRFlux = 0;
         return true;
     }
@@ -230,7 +230,7 @@ void myFeatures::calcSpectralFlux() {
     
     instantaneousFluxPrev = instantaneousFlux;
     
-    if (instantaneousFlux*100.0f > 0.5) {
+    if (instantaneousFlux*100.0f > instantaneousFluxThreshold) {
         LCRFlux++;
         cout<<LCRFlux<<" ";
     }
