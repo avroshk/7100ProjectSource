@@ -15,7 +15,9 @@
 		7A61C288AE942E5885881232 /* ofxEasyFft.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 67BFC7F21E824F5A7FAC65E0 /* ofxEasyFft.cpp */; };
 		BBAB23CB13894F3D00AA2426 /* GLUT.framework in CopyFiles */ = {isa = PBXBuildFile; fileRef = BBAB23BE13894E4700AA2426 /* GLUT.framework */; };
 		CE52DACC1BEB4CE0008ECE74 /* myMappingVector.cpp in Sources */ = {isa = PBXBuildFile; fileRef = CE52DACA1BEB4CE0008ECE74 /* myMappingVector.cpp */; settings = {ASSET_TAGS = (); }; };
+		CE574A541BEF427A006EB6F8 /* myEffects.cpp in Sources */ = {isa = PBXBuildFile; fileRef = CE574A521BEF427A006EB6F8 /* myEffects.cpp */; settings = {ASSET_TAGS = (); }; };
 		CE946E461BE9BE8A00AF294F /* myFeatures.cpp in Sources */ = {isa = PBXBuildFile; fileRef = CE946E441BE9BE8A00AF294F /* myFeatures.cpp */; settings = {ASSET_TAGS = (); }; };
+		CE9AA0FD1BF47CBE00C59D21 /* myUtils.cpp in Sources */ = {isa = PBXBuildFile; fileRef = CE9AA0FB1BF47CBE00C59D21 /* myUtils.cpp */; settings = {ASSET_TAGS = (); }; };
 		D409288D137DB82107887FFD /* ofxFft.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 32CA89CD22339F4F9433CAF6 /* ofxFft.cpp */; };
 		E4328149138ABC9F0047C5CB /* openFrameworksDebug.a in Frameworks */ = {isa = PBXBuildFile; fileRef = E4328148138ABC890047C5CB /* openFrameworksDebug.a */; };
 		E45BE97B0E8CC7DD009D7055 /* AGL.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = E45BE9710E8CC7DD009D7055 /* AGL.framework */; };
@@ -84,9 +86,13 @@
 		CAB67BC7A1CC020FDAC5381B /* ofxEasyFft.h */ = {isa = PBXFileReference; explicitFileType = sourcecode.c.h; fileEncoding = 30; name = ofxEasyFft.h; path = ../../../addons/ofxFft/src/ofxEasyFft.h; sourceTree = SOURCE_ROOT; };
 		CE52DACA1BEB4CE0008ECE74 /* myMappingVector.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = myMappingVector.cpp; sourceTree = "<group>"; };
 		CE52DACB1BEB4CE0008ECE74 /* myMappingVector.hpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; path = myMappingVector.hpp; sourceTree = "<group>"; };
+		CE574A521BEF427A006EB6F8 /* myEffects.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = myEffects.cpp; sourceTree = "<group>"; };
+		CE574A531BEF427A006EB6F8 /* myEffects.hpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; path = myEffects.hpp; sourceTree = "<group>"; };
 		CE67198F2891A8FFEA3686E6 /* ofxFftBasic.cpp */ = {isa = PBXFileReference; explicitFileType = sourcecode.cpp.cpp; fileEncoding = 30; name = ofxFftBasic.cpp; path = ../../../addons/ofxFft/src/ofxFftBasic.cpp; sourceTree = SOURCE_ROOT; };
 		CE946E441BE9BE8A00AF294F /* myFeatures.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; lineEnding = 0; path = myFeatures.cpp; sourceTree = "<group>"; xcLanguageSpecificationIdentifier = xcode.lang.cpp; };
 		CE946E451BE9BE8A00AF294F /* myFeatures.hpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; lineEnding = 0; path = myFeatures.hpp; sourceTree = "<group>"; xcLanguageSpecificationIdentifier = xcode.lang.cpp; };
+		CE9AA0FB1BF47CBE00C59D21 /* myUtils.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = myUtils.cpp; sourceTree = "<group>"; };
+		CE9AA0FC1BF47CBE00C59D21 /* myUtils.hpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; path = myUtils.hpp; sourceTree = "<group>"; };
 		D8952DEFF3CE56AC1009A996 /* ofxFftw.h */ = {isa = PBXFileReference; explicitFileType = sourcecode.c.h; fileEncoding = 30; name = ofxFftw.h; path = ../../../addons/ofxFft/src/ofxFftw.h; sourceTree = SOURCE_ROOT; };
 		DACFE8C08D7F4619176E65D7 /* kiss_fftr.c */ = {isa = PBXFileReference; explicitFileType = sourcecode.c.c; fileEncoding = 30; name = kiss_fftr.c; path = ../../../addons/ofxFft/libs/kiss/kiss_fftr.c; sourceTree = SOURCE_ROOT; };
 		E4328143138ABC890047C5CB /* openFrameworksLib.xcodeproj */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.pb-project"; name = openFrameworksLib.xcodeproj; path = ../../../libs/openFrameworksCompiled/project/osx/openFrameworksLib.xcodeproj; sourceTree = SOURCE_ROOT; };
@@ -272,6 +278,10 @@
 				CE946E451BE9BE8A00AF294F /* myFeatures.hpp */,
 				CE52DACA1BEB4CE0008ECE74 /* myMappingVector.cpp */,
 				CE52DACB1BEB4CE0008ECE74 /* myMappingVector.hpp */,
+				CE574A521BEF427A006EB6F8 /* myEffects.cpp */,
+				CE574A531BEF427A006EB6F8 /* myEffects.hpp */,
+				CE9AA0FB1BF47CBE00C59D21 /* myUtils.cpp */,
+				CE9AA0FC1BF47CBE00C59D21 /* myUtils.hpp */,
 			);
 			path = src;
 			sourceTree = SOURCE_ROOT;
@@ -382,12 +392,14 @@
 			files = (
 				CE946E461BE9BE8A00AF294F /* myFeatures.cpp in Sources */,
 				E4B69E200A3A1BDC003C02F2 /* main.cpp in Sources */,
+				CE9AA0FD1BF47CBE00C59D21 /* myUtils.cpp in Sources */,
 				E4B69E210A3A1BDC003C02F2 /* ofApp.cpp in Sources */,
 				7A61C288AE942E5885881232 /* ofxEasyFft.cpp in Sources */,
 				D409288D137DB82107887FFD /* ofxFft.cpp in Sources */,
 				007F713E619B81D821BEA319 /* ofxFftBasic.cpp in Sources */,
 				29938E05AF78B3DF7A591187 /* ofxFftw.cpp in Sources */,
 				47741AD4D543009E4DF29CEA /* ofxProcessFFT.cpp in Sources */,
+				CE574A541BEF427A006EB6F8 /* myEffects.cpp in Sources */,
 				0686C38EE993C67B96002FA1 /* kiss_fft.c in Sources */,
 				6DB9E3911BA6216FE1F0E91C /* kiss_fftr.c in Sources */,
 				CE52DACC1BEB4CE0008ECE74 /* myMappingVector.cpp in Sources */,

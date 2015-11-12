@@ -11,7 +11,12 @@
          </PersistentStrings>
       </ContextState>
       <ContextState
-         contextName = "myFeatures::extractFeatures(float*, int):myFeatures.cpp">
+         contextName = "ofApp::draw():ofApp.cpp">
+         <PersistentStrings>
+            <PersistentString
+               value = "pitchChroma">
+            </PersistentString>
+         </PersistentStrings>
       </ContextState>
       <ContextState
          contextName = "ofApp::processBlock(float*, int, int):ofApp.cpp">
@@ -28,27 +33,10 @@
          contextName = "myFeatures::myFeatures(int, int):myFeatures.cpp">
       </ContextState>
       <ContextState
-         contextName = "ofApp::draw():ofApp.cpp">
+         contextName = "myFeatures::calcRms():myFeatures.cpp">
          <PersistentStrings>
             <PersistentString
-               value = "pitchChroma">
-            </PersistentString>
-         </PersistentStrings>
-      </ContextState>
-      <ContextState
-         contextName = "ofApp::audioReceived(float*, int, int):ofApp.cpp">
-         <PersistentStrings>
-            <PersistentString
-               value = "*(float (*)[1024])temp">
-            </PersistentString>
-            <PersistentString
-               value = "*(float (*)[1024])input">
-            </PersistentString>
-            <PersistentString
-               value = "*(float (*)[512])input">
-            </PersistentString>
-            <PersistentString
-               value = "*(float (*)[256])input">
+               value = "*(float (*)[1024])signal">
             </PersistentString>
          </PersistentStrings>
       </ContextState>
@@ -57,6 +45,26 @@
          <PersistentStrings>
             <PersistentString
                value = "midiBins[0][1]">
+            </PersistentString>
+            <PersistentString
+               value = "features.SP">
+            </PersistentString>
+         </PersistentStrings>
+      </ContextState>
+      <ContextState
+         contextName = "ofApp::audioReceived(float*, int, int):ofApp.cpp">
+         <PersistentStrings>
+            <PersistentString
+               value = "*(float (*)[256])input">
+            </PersistentString>
+            <PersistentString
+               value = "*(float (*)[1024])input">
+            </PersistentString>
+            <PersistentString
+               value = "*(float (*)[1024])temp">
+            </PersistentString>
+            <PersistentString
+               value = "*(float (*)[512])input">
             </PersistentString>
          </PersistentStrings>
       </ContextState>
@@ -81,12 +89,7 @@
          </PersistentStrings>
       </ContextState>
       <ContextState
-         contextName = "myFeatures::calcRms():myFeatures.cpp">
-         <PersistentStrings>
-            <PersistentString
-               value = "*(float (*)[1024])signal">
-            </PersistentString>
-         </PersistentStrings>
+         contextName = "myFeatures::extractFeatures(float*, int):myFeatures.cpp">
       </ContextState>
    </ContextStates>
 </VariablesViewState>
