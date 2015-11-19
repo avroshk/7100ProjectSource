@@ -9,16 +9,13 @@
 #include "myFeatures.hpp"
 
 void myFeatures::resetFeatures() {
-    sumOfFftBins = 0; rms =0; instantaneousFlux = 0; instantaneousFluxPrev = 0;
-    instantaneousRollOff = 0;
-    instantaneousRollOffPrev = 0;
+    sumOfFftBins = 0; rms =0; instantaneousFluxPrev = instantaneousFlux; instantaneousFlux = 0; instantaneousFluxLP = 0; instantaneousFluxLogPrev = instantaneousFluxLog; instantaneousFluxLog = 0;
+    
+    instantaneousRollOffPrev = instantaneousRollOff; instantaneousRollOff = 0; instantaneousRollOffLP = 0;
     instantaneousPitch = 0; instantaneousSC = 0; instantaneousSS = 0; instantaneousSD = 0;
     harmonicsSum = 0; chromaSum = 0, rms = 0; instantaneousPCF = 0; instantaneousPCC = 0;
-    instantaneousSCR = 0; 
-    
-    //expose functions to set alpha values
-    alphaFlux = 0.5;
-    alphaRollOff = 0.5;
+    instantaneousSCR = 0; instantaneousSF = 0;
+
 }
 
 myFeatures::myFeatures(int sRate, int bufSize) {
@@ -66,44 +63,57 @@ myFeatures::myFeatures(int sRate, int bufSize) {
     
 }
 
-int* myFeatures::getNumOfFeatures() {
-    return &numFeatures;
+int myFeatures::getNumOfFeatures() {
+    return numFeatures;
 }
 
-int* myFeatures::getFftSize() {
-    return &fftSize;
+int myFeatures::getFftSize() {
+    return fftSize;
 }
 
 vector<float> myFeatures::getFftData() {
     return fftData;
 }
 
-float* myFeatures::getSpectralFlux() {
-    return &instantaneousFlux;
+float myFeatures::getSpectralFlux(float alpha) {
+    
+    instantaneousFluxLP = (1-alpha)*instantaneousFlux + alpha*instantaneousFlux;
+    
+    return instantaneousFluxLP;
 }
 
-float* myFeatures::getSpectralRollOff() {
-    return &instantaneousRollOff;
+float myFeatures::getSpectralFluxLog(float alpha) {
+    
+    instantaneousFluxLog = (1-alpha)*instantaneousFluxLog + alpha*instantaneousFluxLogPrev;
+    
+    return instantaneousFluxLog;
 }
 
-float* myFeatures::getSpectralCentroid() {
-    return &instantaneousSC;
+float myFeatures::getSpectralRollOff(float alpha) {
+    
+    instantaneousRollOffLP = (1-alpha)*instantaneousRollOff + alpha * instantaneousRollOffPrev;
+    
+    return instantaneousRollOff;
 }
 
-float* myFeatures::getSpectralSpread() {
-    return &instantaneousSS;
+float myFeatures::getSpectralCentroid() {
+    return instantaneousSC;
 }
 
-float* myFeatures::getSpectralDecrease() {
-    return &instantaneousSD;
+float myFeatures::getSpectralSpread() {
+    return instantaneousSS;
 }
 
-float* myFeatures::getSpectralFlatness() {
-    return &instantaneousSF;
+float myFeatures::getSpectralDecrease() {
+    return instantaneousSD;
 }
 
-float* myFeatures::getSpectralCrest() {
-    return &instantaneousSCR;
+float myFeatures::getSpectralFlatness() {
+    return instantaneousSF;
+}
+
+float myFeatures::getSpectralCrest() {
+    return instantaneousSCR;
 }
 
 vector<float> myFeatures::getPitchChroma() {
@@ -115,24 +125,16 @@ vector<float> myFeatures::getPitchChroma() {
     
 }
 
-float* myFeatures::getPitch() {
-    return &instantaneousPitch;
+float myFeatures::getPitch() {
+    return instantaneousPitch;
 }
 
-float* myFeatures::getPitchChromaFlatness() {
-    return &instantaneousPCF;
+float myFeatures::getPitchChromaFlatness() {
+    return instantaneousPCF;
 }
 
-float* myFeatures::getPitchChromaCrestFactor() {
-    return &instantaneousPCC;
-}
-
-void myFeatures::setAlphaFlux(float value) {
-    alphaFlux = value;
-}
-
-void myFeatures::setAlphaRollOff(float value) {
-    alphaRollOff = value;
+float myFeatures::getPitchChromaCrestFactor() {
+    return instantaneousPCC;
 }
 
 bool myFeatures::spectralFluxLevelCrossingRateChanged() {
@@ -143,28 +145,44 @@ bool myFeatures::spectralFluxLevelCrossingRateChanged() {
     return false;
 }
 
-
 void myFeatures::extractFeatures(float* input, int nChannels) {
     resetFeatures();
     
     signal = input;
     
-    calcRms();
     
-    if (isSilenceDetected()) {
+//    normalizeInputAudio();
+    calcRms();
+        if (isSilenceDetected()) {
         calcFft();
         sumFftBins();
-        calcSpectralFlux();
-        calcSpectralRollOff();
+        calcSpectralFlux(2);
+        calcSpectralFluxLog();
+        calcSpectralRollOff(0.85);
         calcSpectralCentroid();
         calcSpectralSpread();
-        calcSpectralDecrease();
+        calcSpectralDecrease(); // keep no dependency
         calcSpectralFlatness();
         calcSpectralCrest();
         calcPitchChroma();
         calcPitchChromaFlatness();
         
         fftDataPrev = fftData;
+    }
+    
+}
+
+void myFeatures::normalizeInputAudio() {
+    float maxAmp = 0;
+    for (int i=0; i<bufferSize; i++) {
+        if (maxAmp < signal[i]) {
+            maxAmp = signal[i];
+        }
+    }
+    if (maxAmp > 0) {
+        for (int i=0; i<bufferSize; i++) {
+            signal[i] /=maxAmp;
+        }
     }
 }
 
@@ -220,36 +238,63 @@ void myFeatures::calcFft() {
     }
 }
 
-void myFeatures::calcSpectralFlux() {
+void myFeatures::calcSpectralFluxLog() {
     for(int i = 0; i < fftSize; i++) {
-        instantaneousFlux = ((fftDataPrev[i]-fftData[i])*(fftDataPrev[i]-fftData[i])) + instantaneousFlux;
+        try {
+            instantaneousFluxLog +=  abs(log2f(fftData[i]/fftDataPrev[i]));
+        } catch (logic_error e) {
+            //continue looping
+        }
+        
     }
-    instantaneousFlux = 2*instantaneousFlux/fftSize;
-    
-    instantaneousFlux = (1-alphaFlux)*instantaneousFlux + alphaFlux*instantaneousFluxPrev;
-    
-    instantaneousFluxPrev = instantaneousFlux;
-    
-    if (instantaneousFlux*100.0f > instantaneousFluxThreshold) {
-        LCRFlux++;
-        cout<<LCRFlux<<" ";
-    }
+    instantaneousFluxLog = instantaneousFluxLog/fftSize;
     
 }
 
-void myFeatures::calcSpectralRollOff() {
-    instantaneousRollOff = 2*sumOfFftBins/fftSize;
-    
-    instantaneousRollOff = (1-alphaRollOff)*instantaneousRollOff + alphaRollOff *instantaneousRollOffPrev;
-    
-    instantaneousRollOffPrev = instantaneousRollOff;
+void myFeatures::calcSpectralFlux(float degree) {
+    //boundary conditions
+    if (degree < 0.25) {
+        degree = 0.25;
+    }
+    else if (degree > 3) {
+        degree = 3;
+    }
 
+    for(int i = 0; i < fftSize; i++) {
+        instantaneousFlux +=  pow(abs(fftData[i]-fftDataPrev[i]), degree);
+    }
+    
+    instantaneousFlux = pow(instantaneousFlux, (float)1.0/degree)/fftSize;
+    
+    //Normalize
+//    instantaneousFlux /= maxAmpl; //not needed
+
+    if (instantaneousFlux > instantaneousFluxThreshold) {
+        LCRFlux++;
+        cout<<LCRFlux<<" ";
+    }
+}
+
+void myFeatures::calcSpectralRollOff(float rollOffPerc) {
+
+    float threshold = rollOffPerc*sumOfFftBins;
+    int i; float cumSum = 0;
+    for (i=0; i<fftSize; i++) {
+        cumSum +=fftData[i];
+        if (cumSum > threshold) {
+            break;
+        }
+    }
+    
+//    instantaneousRollOff = (float) i/fftSize;
+    instantaneousRollOff = (float) i*sampleRate/(bufferSize);
+    
 }
 
 void myFeatures::calcSpectralCentroid() {
     float sumSC=0, curSumSC=0;
     for(int i = 0; i < fftSize; i++) {
-        curSumSC = fftData[i]*fftData[i];
+        curSumSC = pow(fftData[i],2);
         
         instantaneousSC += curSumSC*i;
         
@@ -259,7 +304,7 @@ void myFeatures::calcSpectralCentroid() {
     instantaneousSC /= sumSC;
     
     //Normalize
-    
+//    instantaneousSC /= fftSize;
     //instantaneousSC
 
 }
@@ -410,7 +455,6 @@ void myFeatures::calcPitchChromaFlatness() {
     instantaneousPCF = exp(instantaneousPCF);
     
     instantaneousPCF /= (chromaSum/12);
-    
 }
 
 float myFeatures::calcPitchChromaCrestFactor(float maxPitchChroma) {

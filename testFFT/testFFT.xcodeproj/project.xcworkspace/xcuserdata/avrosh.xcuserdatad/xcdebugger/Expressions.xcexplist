@@ -6,7 +6,7 @@
          contextName = "GLOBAL">
          <PersistentStrings>
             <PersistentString
-               value = "*(float(*)[1024])block">
+               value = "*(float(*)[1024])signal">
             </PersistentString>
          </PersistentStrings>
       </ContextState>
@@ -33,45 +33,6 @@
          contextName = "myFeatures::myFeatures(int, int):myFeatures.cpp">
       </ContextState>
       <ContextState
-         contextName = "myFeatures::calcRms():myFeatures.cpp">
-         <PersistentStrings>
-            <PersistentString
-               value = "*(float (*)[1024])signal">
-            </PersistentString>
-         </PersistentStrings>
-      </ContextState>
-      <ContextState
-         contextName = "ofApp::setup():ofApp.cpp">
-         <PersistentStrings>
-            <PersistentString
-               value = "midiBins[0][1]">
-            </PersistentString>
-            <PersistentString
-               value = "features.SP">
-            </PersistentString>
-         </PersistentStrings>
-      </ContextState>
-      <ContextState
-         contextName = "ofApp::audioReceived(float*, int, int):ofApp.cpp">
-         <PersistentStrings>
-            <PersistentString
-               value = "*(float (*)[256])input">
-            </PersistentString>
-            <PersistentString
-               value = "*(float (*)[1024])input">
-            </PersistentString>
-            <PersistentString
-               value = "*(float (*)[1024])temp">
-            </PersistentString>
-            <PersistentString
-               value = "*(float (*)[512])input">
-            </PersistentString>
-         </PersistentStrings>
-      </ContextState>
-      <ContextState
-         contextName = "myFeatures::resetFeatures():myFeatures.cpp">
-      </ContextState>
-      <ContextState
          contextName = "ofApp::update():ofApp.cpp">
          <PersistentStrings>
             <PersistentString
@@ -85,6 +46,48 @@
             </PersistentString>
             <PersistentString
                value = "midiBins[1][k]">
+            </PersistentString>
+         </PersistentStrings>
+      </ContextState>
+      <ContextState
+         contextName = "ofApp::setup():ofApp.cpp">
+         <PersistentStrings>
+            <PersistentString
+               value = "midiBins[0][1]">
+            </PersistentString>
+            <PersistentString
+               value = "audioclip">
+            </PersistentString>
+            <PersistentString
+               value = "features.SP">
+            </PersistentString>
+         </PersistentStrings>
+      </ContextState>
+      <ContextState
+         contextName = "ofApp::audioReceived(float*, int, int):ofApp.cpp">
+         <PersistentStrings>
+            <PersistentString
+               value = "*(float (*)[1024])temp">
+            </PersistentString>
+            <PersistentString
+               value = "*(float (*)[512])input">
+            </PersistentString>
+            <PersistentString
+               value = "*(float (*)[1024])input">
+            </PersistentString>
+            <PersistentString
+               value = "*(float (*)[256])input">
+            </PersistentString>
+         </PersistentStrings>
+      </ContextState>
+      <ContextState
+         contextName = "myFeatures::resetFeatures():myFeatures.cpp">
+      </ContextState>
+      <ContextState
+         contextName = "myFeatures::calcRms():myFeatures.cpp">
+         <PersistentStrings>
+            <PersistentString
+               value = "*(float (*)[1024])signal">
             </PersistentString>
          </PersistentStrings>
       </ContextState>

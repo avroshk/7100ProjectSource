@@ -8,12 +8,17 @@
 
 #include "myEffects.hpp"
 
-myEffects::myEffects(string imageFileName) {
+myEffects::myEffects(string imageFileName,int width, int height) {
     succ = myImage.loadImage(imageFileName);
+    imageHeight = height;
+    imageWidth = width;
     
     setUpMeshVertices();
     setUpTriangleIndices();
     backupMesh = meshGrid;
+    
+ 
+    
     
 }
 

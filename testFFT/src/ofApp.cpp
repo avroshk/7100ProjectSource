@@ -1,9 +1,18 @@
 #include "ofApp.h"
+#include <fstream>
+#include <iostream>
 
 //--------------------------------------------------------------
 void ofApp::setup(){
     
+ ////temp
+    myfile.open ("/Users/avrosh/Documents/of_v0.8.4_osx_release/apps/myApps/testFFT/bin/data/features.csv");
+    myfile.clear();
+ ////temp
+    
+    
     ofSetVerticalSync(true);
+    
     
     DEVICEID = 2;  // 2 - at home // 3 - at couch - SoundFlower
 //    DEVICEID = 1;  // 0 - at home // 1 - at couch - Microphone Input
@@ -11,7 +20,7 @@ void ofApp::setup(){
 
     
     plotHeight = 128;
-    
+//    
     BUFFERSIZE = 256; //hopSize
     OVERLAPMULTIPLE = 4; // times the hopSize
     NBUFFERS = 1;
@@ -20,6 +29,7 @@ void ofApp::setup(){
     INPUTS = 1; //mono
     OUTPUTS = 0;
     NUMHOPS = 0;
+    
     
     leftInput.assign(BUFFERSIZE, 0.0); //size of one hop
     
@@ -38,9 +48,9 @@ void ofApp::setup(){
     features->LCRFluxThreshold = 40;
     features->instantaneousFluxThreshold = 0.8;
     
-    drawBins.resize(*features->getFftSize());
-    middleBins.resize(*features->getFftSize());
-    audioBins.resize(*features->getFftSize());
+    drawBins.resize(features->getFftSize());
+    middleBins.resize(features->getFftSize());
+    audioBins.resize(features->getFftSize());
     pitchChroma.resize(12);
     
     // ------ Sound Setup --------
@@ -51,24 +61,47 @@ void ofApp::setup(){
     
     // ------ Feature to Effect Mapping setup -----
 
-    featureMap = new myMappingVector(*features->getNumOfFeatures(),2);
+    featureMap = new myMappingVector(features->getNumOfFeatures(),2);
     featureMap->routeFeature(1, 0, 0);
     featureMap->routeFeature(1, 1, 1);
     featureMap->routeFeature(0.8, 3, 0);
     
     // ------ Image setup -----------
     
-    effects = new myEffects("helen.jpg");
+//    effects = new myEffects("paris.jpg",784,628); //create a offset with the background image by sending different image dimensions here
+     effects = new myEffects("Shura1.png",WIDTH,HEIGHT);
     
     myImage = effects->getImage();
     
     // ------ Frame buffer object setup -----
-    fbo.allocate(784, 628);
+    fbo.allocate(WIDTH, HEIGHT);
     // clear fbo
     fbo.begin();
     ofClear(255,255,255, 0);
     fbo.end();
     
+}
+//--------------------------------------------------------------
+void ofApp::testFeatures() {
+//    audioclip.loadSound("youare_demo.wav");
+
+    if (myfile.is_open()) {
+        
+        if (!flag) {
+//            myfile << "SpectralFlux,SpectralRollOff\n";
+        }
+        
+        myfile << features->getSpectralCentroid()<<","
+        << features->getSpectralDecrease()<<","
+        << features->getSpectralFlatness()<<","
+        << features->getSpectralFlux(0)<<","
+        << features->getSpectralRollOff(0)<<","
+        << features->getSpectralSpread()<<","
+        << features->getSpectralDecrease()<<"\n";
+    }
+   
+//    myfile.close();
+    flag = true;
 }
 
 //--------------------------------------------------------------
@@ -77,11 +110,9 @@ void ofApp::update(){
     float feature1 = featureMap->getFeatureForEffect(0, features->getNormalizedFeatureSet());
     float feature2 = featureMap->getFeatureForEffect(1, features->getNormalizedFeatureSet());
     
-    features->setAlphaFlux(*features->getSpectralFlatness());
+    effects->applyNoiseToMesh(ofMap(features->getSpectralRollOff(0.8),0,0.5,0,0.1),ofMap(features->getSpectralCrest(),0,0.5,0,0.1),ofMap(features->getSpectralFluxLog(0.8), 0, 360, 0.05, 0.35));
     
-    effects->applyNoiseToMesh(ofMap(*features->getSpectralRollOff(),0,0.5,0,0.05),ofMap(*features->getSpectralDecrease(),0,0.5,0,0.005),ofMap(*features->getSpectralCentroid(), 0, 360, 0.05, 0.35));
-    
-    effects->applyJitterToMesh(*features->getPitchChromaCrestFactor());
+    effects->applyJitterToMesh(features->getPitchChromaCrestFactor());
     
     meshGrid = effects->getMeshGrid();
     mesh1 = effects->getMesh();
@@ -102,15 +133,15 @@ void ofApp::draw(){
     // effects :--------------------------------------------------
     
     //    float alpha = ofMap(exp(instantaneousFlux*50.0f), 1, 50, 180, 255);
-    //float alpha = ofMap(features->getSpectralFlux()*30.0f, 0.5, 1, 180, 255);
+//    float alpha = ofMap(*features->getSpectralFlux(0.5)*30.0f, 0.5, 1, 180, 255);
     //     float alpha = ofMap(features->getSpectralDecrease(), 0, 0.5, 180, 255); // good feature mapping
     //    float alpha = ofMap(features->getSpectralFlatness(), 0, 0.5, 180, 255); //no bad
     //     float alpha = ofMap(features->getPitchChromaFlatness(), 0, 0.5, 180, 255); // good feature (kinetoscope effect)
-    float alpha = ofMap(*features->getPitchChromaCrestFactor(), 0, 0.7, 180, 255);
-    float alpha2 = ofMap(*features->getSpectralRollOff()*10.0f, 0, 1, 180, 255);
+    float alpha = ofMap(features->getSpectralFluxLog(0.5), 0, 1, 180, 255);
+    float alpha2 = ofMap(features->getSpectralRollOff(0.5)*10.0f, 0, 1, 180, 255);
     //    float alpha = ofMap(ofGetMouseX(), 0, ofGetWidth(), 0, 255);
     
-    if(*features->getSpectralCentroid() > tempMax) { tempMax = *features->getSpectralCentroid();}
+    if(features->getSpectralCentroid() > tempMax) { tempMax = features->getSpectralCentroid();}
     
     //----------------------------------------------------------
     
@@ -177,16 +208,16 @@ void ofApp::draw(){
         
         
         //string msgFlux = "Flux " + ofToString((float)features->getSpectralCentroid()*50.0f);
-        string msgFlux = "Flux " + ofToString((float)*features->getSpectralFlux()*100.0f);
+        string msgFlux = "Flux " + ofToString((float)features->getSpectralDecrease());
         ofDrawBitmapString(msgFlux, 80, ofGetHeight() - 5);
         
-        string msgRollOff ="Roll off " + ofToString((float)*features->getSpectralRollOff()*50.0f);
+        string msgRollOff ="Roll off " + ofToString((float)features->getSpectralRollOff(0));
         ofDrawBitmapString(msgRollOff, 80, ofGetHeight() - 15);
         
         string msgAlpha = "Alpha " + ofToString((float) alpha2);
         ofDrawBitmapString(msgAlpha, 250, ofGetHeight() - 5);
         
-        string msgPitch ="Pitch " + ofToString((float)*features->getPitch()) + " Hz";
+        string msgPitch ="Pitch " + ofToString((float)features->getPitch()) + " Hz";
         ofDrawBitmapString(msgPitch, 400, ofGetHeight() - 5);
         
         string msgTemp ="Temp " + ofToString((float)tempMax);
@@ -276,6 +307,10 @@ void ofApp::processBlock(float* window, int windowBufferSize, int nChannels){
     soundMutex.lock();
     middleBins = audioBins;
     soundMutex.unlock();
+    
+    //-----------
+    testFeatures();
+    //-----------
 }
 
 //---------

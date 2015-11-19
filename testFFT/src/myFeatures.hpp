@@ -17,9 +17,10 @@ class myFeatures {
 public:
     myFeatures(int,int); //Constructor
     myFeatures(); //Constructor
+    ~myFeatures(); //Destructor -- not implemented yet
     
 //    enum class Feature {
-//        SPECTRALFLUX,
+//        SpectralFlux,
 //        SPECTRALROLLOFF,
 //        SPECTRALCENTROID,
 //        SPECTRALSPREAD,
@@ -30,26 +31,24 @@ public:
     
     void extractFeatures(float*,int); //processes FFT data, time domain signal, and calculates features //calls other private functions to calculate each features
     
-    int* getNumOfFeatures();
-    int* getFftSize();
+    int getNumOfFeatures();
+    int getFftSize();
     vector<float> getFftData();
-    float* getSpectralFlux();
-    float* getSpectralRollOff();
-    float* getSpectralCentroid();
-    float* getSpectralSpread();
-    float* getSpectralDecrease();
-    float* getSpectralFlatness();
-    float* getSpectralCrest();
+    float getSpectralFlux(float);
+    float getSpectralFluxLog(float);
+    float getSpectralRollOff(float);
+    float getSpectralCentroid();
+    float getSpectralSpread();
+    float getSpectralDecrease();
+    float getSpectralFlatness();
+    float getSpectralCrest();
     vector<float> getPitchChroma();
-    float* getPitch();
-    float* getPitchChromaFlatness();
-    float* getPitchChromaCrestFactor();
+    float getPitch();
+    float getPitchChromaFlatness();
+    float getPitchChromaCrestFactor();
     bool spectralFluxLevelCrossingRateChanged();
 
     vector<float> getNormalizedFeatureSet();
-    
-    void setAlphaFlux(float);
-    void setAlphaRollOff(float);
     
     int LCRFluxThreshold = 20; //default
     float instantaneousFluxThreshold=0.5; //default
@@ -64,8 +63,8 @@ private:
     float* signal;
     vector <float> fftData, fftDataPrev, pitchChroma, finalPitchChroma, middlePitchChroma;
     
-    float instantaneousFlux, instantaneousFluxPrev;
-    float instantaneousRollOff, instantaneousRollOffPrev;
+    float instantaneousFlux, instantaneousFluxLog, instantaneousFluxLP, instantaneousFluxPrev=0, instantaneousFluxLogPrev=0;
+    float instantaneousRollOff, instantaneousRollOffPrev = 0, instantaneousRollOffLP;
     float instantaneousSC, instantaneousSS, instantaneousSD, instantaneousSF, instantaneousPCF;
     float instantaneousPitch, instantaneousSCR, instantaneousPCC;
     float sumOfFftBins,rms;
@@ -80,11 +79,13 @@ private:
     void resetFeatures();
     void calcRms();
     bool isSilenceDetected();
+    void normalizeInputAudio();
     void calcFft();
     void findMaxBin();
     void sumFftBins();
-    void calcSpectralFlux();
-    void calcSpectralRollOff();
+    void calcSpectralFlux(float);
+    void calcSpectralFluxLog();
+    void calcSpectralRollOff(float);
     void calcSpectralCentroid();
     void calcSpectralSpread();
     void calcSpectralDecrease();

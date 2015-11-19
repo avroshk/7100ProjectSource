@@ -14,7 +14,7 @@
 
 class myEffects {
 public:
-    myEffects(string); //constructor
+    myEffects(string,int,int); //constructor
     void applyNoiseToMesh(float,float,float);
     void applyAlphaToTexture(float,float);
     void applyJitterToMesh(float);
@@ -34,8 +34,8 @@ private:
     void setUpMeshVertices();
     void setUpTriangleIndices();
     
-    int imageHeight = 628;
-    int imageWidth = 784;
+    int imageHeight;
+    int imageWidth;
     int W = 100; //Grid size
     int H = 100;
     int meshSize = 6;
