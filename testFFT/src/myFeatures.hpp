@@ -19,21 +19,26 @@ public:
     myFeatures(); //Constructor
     ~myFeatures(); //Destructor -- not implemented yet
     
-//    enum class Feature {
-//        SpectralFlux,
-//        SPECTRALROLLOFF,
-//        SPECTRALCENTROID,
-//        SPECTRALSPREAD,
-//        SPECTRALDECREASE,
-//        PITCH,
-//        SPECTRALFLATNESS,
-//        PITCHCHROMAFLATNESS};
+    
+//    enum
+//    {	SPECTRAL_FLUX,
+//        SPECTRAL_ROLLOFF,
+//        SPECTRAL_CENTROID,
+//        SPECTRAL_SPREAD,
+//        SPECTRAL_DECREASE,
+//        SPECTRAL_FLATNESS,
+//        PITCHCHROMA_FLATNESS,
+//        PITCH
+//    }
+    
     
     void extractFeatures(float*,int); //processes FFT data, time domain signal, and calculates features //calls other private functions to calculate each features
     
     int getNumOfFeatures();
     int getFftSize();
     vector<float> getFftData();
+    vector<float> getNormalizedInputSignal();
+    vector<float> getNormalizedFftData(); //helpful for displaying fft graphs
     float getSpectralFlux(float);
     float getSpectralFluxLog(float);
     float getSpectralRollOff(float);
@@ -61,28 +66,33 @@ private:
     
     int fftSize, sampleRate, bufferSize;
     float* signal;
-    vector <float> fftData, fftDataPrev, pitchChroma, finalPitchChroma, middlePitchChroma;
+    vector <float> fftData, fftDataPrev, pitchChroma, finalPitchChroma, middlePitchChroma, normalizedInput, normalizedFft;
     
     float instantaneousFlux, instantaneousFluxLog, instantaneousFluxLP, instantaneousFluxPrev=0, instantaneousFluxLogPrev=0;
     float instantaneousRollOff, instantaneousRollOffPrev = 0, instantaneousRollOffLP;
     float instantaneousSC, instantaneousSS, instantaneousSD, instantaneousSF, instantaneousPCF;
     float instantaneousPitch, instantaneousSCR, instantaneousPCC;
-    float sumOfFftBins,rms;
+    float sumOfFftBins,sumOfNormFftBins,rms;
     
     int LCRFlux = 0; //global counter
     
     float alphaFlux,alphaRollOff;
     
-    float referencePitch, curFreq, chromaSum, harmonicsSum;
-    float** midiBins; //for Pitch Chroma
+    float referencePitch, curFreq, chromaSum, harmonicsSum,binFreqMultiple;
+    vector< vector<float> > filterWeightsForPitchChroma;
+    int matchedBinsCount,prevBinMidiPitch,currentBinMidiPitch,numOctaves,chromaMidiPitch,numNotesInOctave;
     
     void resetFeatures();
     void calcRms();
     bool isSilenceDetected();
-    void normalizeInputAudio();
+    void normalizeInputAudioBlock();
+    void normalizeFft();
+    void initPitchChromaWeightFilter();
     void calcFft();
+    void calcNormFft();
     void findMaxBin();
     void sumFftBins();
+    void sumNormFftBins();
     void calcSpectralFlux(float);
     void calcSpectralFluxLog();
     void calcSpectralRollOff(float);
@@ -92,11 +102,13 @@ private:
     void calcSpectralFlatness();
     void calcSpectralCrest();
     void calcPitchChroma();
+    void resetPitchChroma();
     void calcPitchChromaFlatness();
     float calcPitchChromaCrestFactor(float); //called from calcPitchChroma()
     
     //Normalize features
     //Expose features
+    
 };
 
 

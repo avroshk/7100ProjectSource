@@ -9,20 +9,35 @@
 #include "myFeatures.hpp"
 
 void myFeatures::resetFeatures() {
-    sumOfFftBins = 0; sumOfNormFftBins = 0;
     rms = 0;
+    sumOfFftBins = 0;
+    sumOfNormFftBins = 0;
+    
+    //Set previous flux
     instantaneousFluxPrev = instantaneousFlux;
     instantaneousFlux = 0;
     instantaneousFluxLP = 0;
+    
+    //Set previous flux
     instantaneousFluxLogPrev = instantaneousFluxLog;
     instantaneousFluxLog = 0;
     
-    instantaneousRollOffPrev = instantaneousRollOff; instantaneousRollOff = 0; instantaneousRollOffLP = 0;
-    instantaneousPitch = 0; instantaneousSC = 0; instantaneousSS = 0; instantaneousSD = 0;
-    harmonicsSum = 0; chromaSum = 0, rms = 0; instantaneousPCF = 0; instantaneousPCC = 0;
-    instantaneousSCR = 0; instantaneousSF = 0;
+    instantaneousRollOffPrev = instantaneousRollOff;
+    instantaneousRollOff = 0;
+    instantaneousRollOffLP = 0;
     
-   
+    instantaneousPitch = 0;
+    instantaneousSC = 0;
+    instantaneousSS = 0;
+    instantaneousSD = 0;
+    
+    instantaneousPCF = 0;
+    instantaneousPCC = 0;
+    instantaneousSCR = 0;
+    instantaneousSF = 0;
+    
+    harmonicsSum = 0;
+    chromaSum = 0;
 }
 
 myFeatures::myFeatures(int sRate, int bufSize) {
@@ -31,7 +46,6 @@ myFeatures::myFeatures(int sRate, int bufSize) {
     
     bufferSize = bufSize;
     sampleRate = sRate;
-
     
     //Initialize FFT
     fft = ofxFft::create(bufferSize, OF_FFT_WINDOW_HANN, OF_FFT_BASIC);
@@ -43,64 +57,45 @@ myFeatures::myFeatures(int sRate, int bufSize) {
     normalizedInput.resize(bufferSize);
     normalizedFft.resize(fftSize);
     
-    //Inititalize Midi Pitches vector for Pitch Chroma
-    
-    referencePitch = 440; //hard-coded
-    curFreq = 0;
-    int length = fftSize;
-    int height = 3;
     pitchChroma.resize(12);
-    finalPitchChroma.resize(12);
     middlePitchChroma.resize(12);
+    finalPitchChroma.resize(12);
     
-    midis.resize(fftSize);
-    midiWeights.resize(fftSize);
-    midiSkipper.resize(fftSize);
+    
+    //Inititalize weighting for Pitch Chroma
+    initPitchChromaWeightFilter();
    
-    midiBins = new float*[height];
-    midiBins[0] = new float[length];
-    midiBins[1] = new float[length];
-    midiBins[2] = new float[length];
-    int curAvgCount = 1;
+}
+
+void myFeatures::extractFeatures(float* input, int nChannels) {
+    resetFeatures();
     
-    float tempCalc = (float)sampleRate*2/(float)(fftSize);
+    signal = input;
     
-    for (int k = 0; k < fftSize; k++) {
+    calcRms();
+    
+    if (!isSilenceDetected()) {
+        normalizeInputAudioBlock(); //Not all features use normalized input
+        calcFft();
+        calcNormFft(); //Calculate fft using normalized input
+        sumFftBins();
+        sumNormFftBins();
+        calcSpectralFlux(2);
+        calcSpectralFluxLog();
+        calcSpectralRollOff(0.85);
+        calcSpectralCentroid();
+        calcSpectralSpread();
+        calcSpectralDecrease(); // keep no dependency
+        calcSpectralFlatness();
+        calcSpectralCrest();
+        calcPitchChroma();
+        calcPitchChromaFlatness();
         
-        curFreq = (k+1)*tempCalc;
-        
-        if(curFreq == 0)
-            midiBins[0][k] = 0;
-        else
-            midiBins[0][k] = round(69+12*log2f(curFreq/referencePitch));
-        
-        midiBins[1][k] = 1;
-        midiWeights[k] = midiBins[1][k];
-        midiBins[2][k] = 0;
-        midiSkipper[k] = midiBins[2][k];
-        
-        if (k>0) {
-            if(midiBins[0][k-1] == midiBins[0][k]) {
-                curAvgCount++;
-            }
-            else {
-                if(curAvgCount>1) {
-                    for(int i =0;i<curAvgCount; i++) {
-                        midiBins[1][k-i-1] = (float)1/curAvgCount;
-                        midiWeights[k-i-1] = midiBins[1][k-i-1];
-                        if (i!=0) {
-                            midiBins[2][k-i-1] = -1;
-                            midiSkipper[k-i-1] = midiBins[2][k-i-1];
-                        }
-                    }
-                    curAvgCount = 1;
-                }
-                
-            }
-        }
-        midis[k] = midiBins[0][k];
+        fftDataPrev = fftData;
     }
 }
+
+//----------- get methods start >>>>>>>>>>>>>
 
 int myFeatures::getNumOfFeatures() {
     return numFeatures;
@@ -116,6 +111,10 @@ int myFeatures::getFftSize() {
 
 vector<float> myFeatures::getFftData() {
     return fftData;
+}
+
+vector<float> myFeatures::getNormalizedFftData() {
+    return normalizedFft;
 }
 
 float myFeatures::getSpectralFlux(float alpha) {
@@ -188,35 +187,9 @@ bool myFeatures::spectralFluxLevelCrossingRateChanged() {
     return false;
 }
 
-void myFeatures::extractFeatures(float* input, int nChannels) {
-    resetFeatures();
-    
-    signal = input;
-    
-    calcRms();
-    normalizeInputAudio(); //Not all features us normalized input
-        if (!isSilenceDetected()) {
-        calcFft();
-        calcNormFft();
-        sumFftBins();
-        sumNormFftBins();
-        calcSpectralFlux(2);
-//        calcSpectralFluxLog();
-        calcSpectralRollOff(0.85);
-        calcSpectralCentroid();
-        calcSpectralSpread();
-        calcSpectralDecrease(); // keep no dependency
-        calcSpectralFlatness();
-        calcSpectralCrest();
-        calcPitchChroma();
-        calcPitchChromaFlatness();
-        
-        fftDataPrev = fftData;
-    }
-    
-}
+//<<<<<<<<<<< get methods end -------------
 
-void myFeatures::normalizeInputAudio() {
+void myFeatures::normalizeInputAudioBlock() {
     float maxValue = 0;
 
     for(int i = 0; i < bufferSize; i++) {
@@ -230,19 +203,19 @@ void myFeatures::normalizeInputAudio() {
     }
 }
 
-//void myFeatures::normalizeFft() {
-//    float maxValue = 0;
-//    
-//    for(int i = 0; i < fftSize; i++) {
-//        if(abs(fftData[i]) > maxValue) {
-//            maxValue = abs(fftData[i]);
-//        }
-//    }
-//    
-//    for(int i = 0; i < fftSize; i++) {
-//        normalizedFft[i] = fftData[i]/maxValue;
-//    }
-//}
+void myFeatures::normalizeFft() {
+    float maxValue = 0;
+    
+    for(int i = 0; i < fftSize; i++) {
+        if(abs(fftData[i]) > maxValue) {
+            maxValue = abs(fftData[i]);
+        }
+    }
+    
+    for(int i = 0; i < fftSize; i++) {
+        normalizedFft[i] = fftData[i]/maxValue;
+    }
+}
 
 void myFeatures::sumFftBins() {
     for(int i = 0; i < fftSize; i++) {
@@ -277,13 +250,6 @@ void myFeatures::calcFft() {
     float* curFft = fft->getAmplitude();
     //    memcpy(&audioBins[0], curFft, sizeof(float) * fft->getBinSize());
     copy(curFft, curFft + fft->getBinSize(), fftData.begin());
-    
-    for(int i = 0; i < fftSize; i++) {
-        fftData[i] /=2;
-    }
-    
-//    normalizeFft();
-
 }
 
 void myFeatures::calcNormFft() {
@@ -301,12 +267,11 @@ void myFeatures::calcSpectralFluxLog() {
         try {
             instantaneousFluxLog +=  abs(log2f(fftData[i]/fftDataPrev[i]));
         } catch (logic_error e) {
-            //continue looping
+            instantaneousFluxLog = 0;
+            return;
         }
-        
     }
     instantaneousFluxLog = instantaneousFluxLog/fftSize;
-    
 }
 
 void myFeatures::calcSpectralFlux(float degree) {
@@ -344,27 +309,25 @@ void myFeatures::calcSpectralRollOff(float rollOffPerc) {
         }
     }
     
-    instantaneousRollOff = (float) i/fftSize;
-//    instantaneousRollOff = (float) (i+1)*sampleRate/(bufferSize); //correctin i to i+1
-    
+    instantaneousRollOff = (float) i/fftSize; //Normalized output
 }
 
 void myFeatures::calcSpectralCentroid() {
     float sumSC=0, curSumSC=0;
+    
     for(int i = 0; i < fftSize; i++) {
         curSumSC = pow(normalizedFft[i],2);
-        
         instantaneousSC += curSumSC*i;
-        
         sumSC += curSumSC;
     }
-    
-    instantaneousSC /= sumSC;
-    
-    //Normalize
-//    instantaneousSC /= fftSize;
-    //instantaneousSC
+    try {
+        instantaneousSC /= sumSC;
+    } catch (logic_error e) {
+        instantaneousSC = 0;
+        return;
+    }
 
+    //Normalize
 }
 
 void myFeatures::calcSpectralSpread() {
@@ -377,8 +340,13 @@ void myFeatures::calcSpectralSpread() {
         sumSS += curSumSS;
     }
     
-    instantaneousSS /= sumSS;
-    
+    try {
+        instantaneousSS /= sumSS;
+    } catch (logic_error e) {
+        instantaneousSS = 0;
+        return;
+    }
+
     //Normalize
     
 }
@@ -389,7 +357,13 @@ void myFeatures::calcSpectralDecrease() {
         instantaneousSD += (normalizedFft[i] - normalizedFft[0])/(i+1);
     }
     
-    instantaneousSD /= sumOfNormFftBins;
+    
+    try {
+        instantaneousSD /= sumOfNormFftBins;
+    } catch (logic_error e) {
+        instantaneousSD = 0;
+        return;
+    }
     
     //Normalize
     
@@ -403,10 +377,14 @@ void myFeatures::calcSpectralFlatness() {
     }
     
     instantaneousSF /= fftSize;
-    
     instantaneousSF = exp(instantaneousSF);
     
-    instantaneousSF /= (sumOfNormFftBins/fftSize);
+    try {
+        instantaneousSF /= (sumOfNormFftBins/fftSize);
+    } catch (logic_error e) {
+        instantaneousSF = 0;
+        return;
+    }
     
     //Normalize
     
@@ -420,45 +398,39 @@ void myFeatures::calcSpectralCrest() {
         }
     }
     
-    instantaneousSCR /= sumOfFftBins;
+    try {
+        instantaneousSCR /= sumOfFftBins;
+    } catch (logic_error e) {
+        instantaneousSCR = 0;
+        return;
+    }
     
     //Normalize
-    
+}
+
+void myFeatures::resetPitchChroma() {
+    //Reset pitch chroma values to 0
+    for (int i=0; i<12; i++) {
+        pitchChroma[i] = 0.0;
+    }
 }
 
 void myFeatures::calcPitchChroma() {
     
-    for (int i=0; i<12; i++) {
-        pitchChroma[i] = 0.0;
-    }
+    resetPitchChroma();
     
     float maxBinValue = 0;
     int maxBinLoc = 0;
 
-    int lowestMidiPitch = 60; // C4 = 261.6Hz
-
     for (int j=0; j<12; j++) {
-        int numOctaves = 4; //Check only four octaves
+       
         for (int k=0; k<fftSize; k++) {
-            if(int(midiBins[0][k]) >= lowestMidiPitch && numOctaves > 0)
-            {
-                if ((int(midiBins[0][k]) - lowestMidiPitch) % 12 == 0) {
-//                    if (midiBins[1][k] != -1) {
-//                        harmonicsSum += midiBins[1][k]*midiBins[1][k];
-//                        numOctaves--;
-//                    }
-                    harmonicsSum += pow(midiBins[1][k]*fftData[k],2);
-                    if (midiBins[2][k] != -1) {
-                        numOctaves--;
-                    }
-                }
-            }
+            harmonicsSum += pow(filterWeightsForPitchChroma[j][k]*fftData[k],2);
         }
         pitchChroma[j] = harmonicsSum;
         harmonicsSum = 0;
-        lowestMidiPitch++;
         
-        chromaSum = chromaSum + pitchChroma[j];
+        chromaSum += pitchChroma[j];
     }
     
     for (int i=0; i<fftSize; i++) {
@@ -483,12 +455,99 @@ void myFeatures::calcPitchChroma() {
     
     //Normalize
     for (int m=0; m<12; m++) {
-        pitchChroma[m] /= chromaSum;
+        try {
+            pitchChroma[m] /= chromaSum;
+        } catch (logic_error e) {
+            resetPitchChroma();
+            soundMutex.lock();
+            middlePitchChroma = pitchChroma;
+            soundMutex.unlock();
+            return;
+        }
     }
-    
+
     soundMutex.lock();
     middlePitchChroma = pitchChroma;
     soundMutex.unlock();
+}
+
+void myFeatures::initPitchChromaWeightFilter() {
+    
+    filterWeightsForPitchChroma.resize(12,vector<float>(fftSize));
+    
+    
+    referencePitch = 440; //hard-coded
+    curFreq = 0;
+    
+    matchedBinsCount = 1;
+    prevBinMidiPitch = 0;
+    currentBinMidiPitch = 0;
+    numOctaves =4;
+    chromaMidiPitch = 60; // C4 = 261.6Hz
+    numNotesInOctave = 12;
+    
+    binFreqMultiple = (float)sampleRate*0.5/(float)(fftSize);
+    
+    //Iterate through all the bins of the spectrum
+    for (int k = 0; k < fftSize; k++) {
+        
+        //1. calculate the midi pitch value of the bin
+        //2. rounding of the pitch to integer gives quantizes the midi pitches in the -50 cents to +50 cents range
+        curFreq = (k+1)*binFreqMultiple;
+        currentBinMidiPitch = round(69+12*log2f(curFreq/referencePitch));
+        
+        //reset the chroma midi pitch to the lowest value at the start from on every iteration
+        chromaMidiPitch = 60;
+        
+        //Start from the second bin since we keep track of midi pitch of previous bin
+        if (k>0) {
+            
+            //Iterate through all the midi pitches in an octave starting from the lowest
+            for (int j=0; j<numNotesInOctave; j++) {
+                
+                //check if the current bin's midi value lies between the defined range of octaves
+                if(currentBinMidiPitch >= chromaMidiPitch && currentBinMidiPitch <= (numOctaves*numNotesInOctave)+chromaMidiPitch) {
+                    
+                    //do the following only for octaves of the midi pitch we are currently dealing with
+                    if ((currentBinMidiPitch - chromaMidiPitch) % 12 == 0) {
+                        
+                        //keep track of a counter of the current midi pitch is same as previous
+                        //we are keeping track of the span of a midi pitch value across bins
+                        if(prevBinMidiPitch == currentBinMidiPitch) {
+                            matchedBinsCount++;
+                        }
+                        else {
+                            
+                            //previous matches were found if count is greater than 1
+                            if(matchedBinsCount>1) {
+                                
+                                for(int i =0;i<matchedBinsCount; i++) {
+                                    
+                                    //since matches were found for the previous pitch in the chroma we decrease the index j by 1 in a cyclic manner.
+                                    int index = -1;
+                                    if (j == 0) {
+                                        index = 11;
+                                    } else {
+                                        index = j-1;
+                                    }
+                                    
+                                    //since previous matches were found iterate through those bins and distribute the weights
+                                    filterWeightsForPitchChroma[index][k-i-1] = (float)1/matchedBinsCount;
+                                }
+                                matchedBinsCount = 1;
+                            }
+                            
+                            //set weight to 1
+                            filterWeightsForPitchChroma[j][k] = 1;
+                        }
+                    }
+                }
+                //next midi pitch
+                chromaMidiPitch++;
+            }
+        }
+        prevBinMidiPitch = currentBinMidiPitch;
+    }
 }
 
 void myFeatures::calcPitchChromaFlatness() {

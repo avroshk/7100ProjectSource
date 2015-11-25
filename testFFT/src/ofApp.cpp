@@ -2,48 +2,53 @@
 #include <fstream>
 #include <iostream>
 
+
+
+
 //--------------------------------------------------------------
 void ofApp::setup(){
     
- ////temp
-    myfile.open ("/Users/avrosh/Documents/of_v0.8.4_osx_release/apps/myApps/testFFT/bin/data/features.csv");
-    myfile.clear();
- ////temp
-    
-    
     ofSetVerticalSync(true);
-    
-    
-    DEVICEID = 2;  // 2 - at home // 3 - at couch - SoundFlower
-//    DEVICEID = 1;  // 0 - at home // 1 - at couch - Microphone Input
-    //the device id corresponds to all audio devices, including  input-only and output-only devices.
-
-    
     plotHeight = 128;
-//    
-    BUFFERSIZE = 256; //hopSize
-    OVERLAPMULTIPLE = 4; // times the hopSize
-    NBUFFERS = 1;
-    SAMPLERATE = 44100;
-    //INPUTS = 2; //stereo
-    INPUTS = 1; //mono
-    OUTPUTS = 0;
-    NUMHOPS = 0;
     
+#ifdef TEST
+    /* write results into a csv file */
+    string testoutput_fn = "/Users/avrosh/Documents/of_v0.8.4_osx_release/apps/myApps/testFFT/bin/data/features.csv";
+    string audiosample_fn = "/Users/avrosh/Documents/of_v0.8.4_osx_release/apps/myApps/testFFT/bin/data/funfair.wav";
     
-    leftInput.assign(BUFFERSIZE, 0.0); //size of one hop
+    myfile.open (testoutput_fn);
+    myfile.clear();
+    myAudioFile = SndfileHandle(audiosample_fn);
     
-    if(INPUTS == 2) {
-        rightInput.assign(BUFFERSIZE, 0.0); //size of one hop
-    }
+    SAMPLERATE = myAudioFile.samplerate();
+    INPUTS = myAudioFile.channels();
     
-    soundStream.listDevices();
-    
+    // -- for audio streamed from file -- // end //
+#else
+//    soundStream.listDevices(); --uncomment to print list og available devices
     soundStream.setDeviceID(DEVICEID);
+    soundStream.setup(this, OUTPUTS, INPUTS, SAMPLERATE, BUFFERSIZE, NBUFFERS);
+#endif
+    
+    leftInput.resize(BUFFERSIZE*OVERLAPMULTIPLE);//size of one hop
+    drawInput.resize(BUFFERSIZE*OVERLAPMULTIPLE, 0.0);
+    middleInput.resize(BUFFERSIZE*OVERLAPMULTIPLE,0.0);
     
     block = new float[BUFFERSIZE*OVERLAPMULTIPLE];
     
+    //Stereo
+    if(INPUTS == 2) {
+        rightInput.assign(BUFFERSIZE, 0.0); //size of one hop
+        downMixedInput.assign(BUFFERSIZE, 0.0); //size of one hop
+        buffer = new float[BUFFERSIZE*2];
+    }
+    //Mono
+    else if(INPUTS == 2) {
+        buffer = new float[BUFFERSIZE];
+    }
+    
     // ------ Features setup -------
+    
     features = new myFeatures(SAMPLERATE,BUFFERSIZE*OVERLAPMULTIPLE);
     features->LCRFluxThreshold = 40;
     features->instantaneousFluxThreshold = 0.8;
@@ -52,12 +57,7 @@ void ofApp::setup(){
     middleBins.resize(features->getFftSize());
     audioBins.resize(features->getFftSize());
     pitchChroma.resize(12);
-    
-    // ------ Sound Setup --------
-    //ofSoundStreamSetup(0, 1, this, 44100, BUFFERSIZE, 4); //BUFFERSIZE is set here
-    soundStream.setup(this, OUTPUTS, INPUTS, SAMPLERATE, BUFFERSIZE, NBUFFERS);
-    
-    ofBackground(0, 0, 0);
+    normalizedInput.resize(BUFFERSIZE);
     
     // ------ Feature to Effect Mapping setup -----
 
@@ -68,59 +68,51 @@ void ofApp::setup(){
     
     // ------ Image setup -----------
     
-//    effects = new myEffects("paris.jpg",784,628); //create a offset with the background image by sending different image dimensions here
-     effects = new myEffects("Shura1.png",WIDTH,HEIGHT);
+    /*create a offset with the background image by sending different image dimensions here */
+    effects = new myEffects("helen.jpg",WIDTH,HEIGHT);
     
     myImage = effects->getImage();
     
-    // ------ Frame buffer object setup -----
+    // ------ Graphics setup -----
+    ofBackground(0, 0, 0);
     fbo.allocate(WIDTH, HEIGHT);
     // clear fbo
     fbo.begin();
     ofClear(255,255,255, 0);
     fbo.end();
+}
+
+//--------------------------------------------------------------
+void ofApp::update() {
     
-}
-//--------------------------------------------------------------
-void ofApp::testFeatures() {
-//    audioclip.loadSound("youare_demo.wav");
-
-    if (myfile.is_open()) {
-        
-        if (!flag) {
-//            myfile << "SpectralFlux,SpectralRollOff\n";
-        }
-        
-        myfile << features->getSpectralCentroid()<<","
-        << features->getSpectralDecrease()<<","
-        << features->getSpectralFlatness()<<","
-        << features->getSpectralFlux(0)<<","
-        << features->getSpectralRollOff(0)<<","
-        << features->getSpectralSpread()<<","
-        << features->getSpectralDecrease()<<"\n";
+#ifdef TEST
+    //Stereo
+    if(INPUTS==2) {
+        myAudioFile.read (buffer, BUFFERSIZE*2);
+        audioReceived(buffer, BUFFERSIZE*2, INPUTS);
     }
-   
-//    myfile.close();
-    flag = true;
-}
-
-//--------------------------------------------------------------
-void ofApp::update(){
-    // ------ Get features -------
+    //Mono
+    else if(INPUTS==1) {
+        myAudioFile.read (buffer, BUFFERSIZE);
+        audioReceived(buffer, BUFFERSIZE, INPUTS);
+    }
+#endif
+    
+    // ------ Update features -------
     float feature1 = featureMap->getFeatureForEffect(0, features->getNormalizedFeatureSet());
     float feature2 = featureMap->getFeatureForEffect(1, features->getNormalizedFeatureSet());
     
-    effects->applyNoiseToMesh(ofMap(features->getSpectralRollOff(0.8),0,0.5,0,0.1),ofMap(features->getSpectralCrest(),0,0.5,0,0.1),ofMap(features->getSpectralFluxLog(0.8), 0, 360, 0.05, 0.35));
+    effects->applyNoiseToMesh(ofMap(features->getSpectralRollOff(0.5),0,1,0,0.1),ofMap(features->getSpectralFlux(0.5),0,1,0,0.1),ofMap(features->getSpectralRollOff(0.5), 0, 0.5, 0.05, 0.35));
     
     effects->applyJitterToMesh(features->getPitchChromaCrestFactor());
     
+    // ------ Update mesh -------
     meshGrid = effects->getMeshGrid();
     mesh1 = effects->getMesh();
     
     if (features->spectralFluxLevelCrossingRateChanged()) {
         effects->refreshMesh();
     }
-    
 }
 
 //--------------------------------------------------------------
@@ -134,10 +126,10 @@ void ofApp::draw(){
     
     //    float alpha = ofMap(exp(instantaneousFlux*50.0f), 1, 50, 180, 255);
 //    float alpha = ofMap(*features->getSpectralFlux(0.5)*30.0f, 0.5, 1, 180, 255);
-    //     float alpha = ofMap(features->getSpectralDecrease(), 0, 0.5, 180, 255); // good feature mapping
+         float alpha = ofMap(features->getSpectralDecrease(), 0, 0.5, 180, 255); // good feature mapping
     //    float alpha = ofMap(features->getSpectralFlatness(), 0, 0.5, 180, 255); //no bad
     //     float alpha = ofMap(features->getPitchChromaFlatness(), 0, 0.5, 180, 255); // good feature (kinetoscope effect)
-    float alpha = ofMap(features->getSpectralFluxLog(0.5), 0, 1, 180, 255);
+//    float alpha = ofMap(features->getSpectralFluxLog(0.5), 0, 1, 180, 255);
     float alpha2 = ofMap(features->getSpectralRollOff(0.5)*10.0f, 0, 1, 180, 255);
     //    float alpha = ofMap(ofGetMouseX(), 0, ofGetWidth(), 0, 255);
     
@@ -152,7 +144,9 @@ void ofApp::draw(){
         
         soundMutex.lock();
         drawBins = middleBins;
+        drawInput = middleInput;
         soundMutex.unlock();
+        
         
         ofDrawBitmapString("Frequency Domain", 0, 0);
         plot(drawBins, -plotHeight, plotHeight / 2);
@@ -175,8 +169,8 @@ void ofApp::draw(){
         ofSetLineWidth(3);
         
         ofBeginShape();
-        for (unsigned int i = 0; i < leftInput.size(); i++){
-            ofVertex(2*i, 100 -leftInput[i]*180.0f);
+        for (unsigned int i = 0; i < drawInput.size(); i++){
+            ofVertex(2*i, 100 -drawInput[i]*180.0f);
         }
         ofEndShape(false);
         ofPopMatrix();
@@ -196,7 +190,7 @@ void ofApp::draw(){
         
         ofSetColor(245, 58, 135);
         ofSetLineWidth(3);
-        string pitches[] = {"A","A#","B","C","C#","D","D#","E","F","F#","G","G#"};
+        string pitches[] = {"C","C#","D","D#","E","F","F#","G","G#","A","A#","B"};
         pitchChroma = features->getPitchChroma();
         for(int i =0; i<12;i++){
             ofRect(0+40*i,0,40, pitchChroma[i]*200);
@@ -208,10 +202,10 @@ void ofApp::draw(){
         
         
         //string msgFlux = "Flux " + ofToString((float)features->getSpectralCentroid()*50.0f);
-        string msgFlux = "Flux " + ofToString((float)features->getSpectralDecrease());
+        string msgFlux = "Flux " + ofToString((float)features->getSpectralFlux(0.5));
         ofDrawBitmapString(msgFlux, 80, ofGetHeight() - 5);
         
-        string msgRollOff ="Roll off " + ofToString((float)features->getSpectralRollOff(0));
+        string msgRollOff ="Roll off " + ofToString((float)features->getSpectralRollOff(0.5));
         ofDrawBitmapString(msgRollOff, 80, ofGetHeight() - 15);
         
         string msgAlpha = "Alpha " + ofToString((float) alpha2);
@@ -281,7 +275,7 @@ void ofApp::draw(){
     
     fbo.draw(0,0);
 }
-//-----------
+//-----------------------------------------------
 
 void ofApp::plot(vector<float>& buffer, float scale, float offset) {
     ofNoFill();
@@ -296,9 +290,74 @@ void ofApp::plot(vector<float>& buffer, float scale, float offset) {
     ofEndShape();
     glPopMatrix();
 }
-//--------
+
+void ofApp::audioReceived(float* input, int bufferSize, int nChannels) {
+    //Stereo
+    if (nChannels == 2) {
+        
+        //We may need two different functions for downmixing interleaved and non-interleaved audio
+        
+        /* sndfile-> returns interleaved stereo */
+        downMixedInput = downMixAudio(input, input+1, bufferSize);
+
+        /* ofSoundStream returns non-interleaved stereo by default*/
+//        downMixedInput = downMixAudio(input, input+bufferSize, bufferSize);
+        blockAndProcessAudioData(&downMixedInput[0],BUFFERSIZE,nChannels);
+    }
+    //Mono
+    else if(nChannels == 1) {
+        blockAndProcessAudioData(input,BUFFERSIZE,nChannels);
+    }
+   
+}
+//--------------------------------------------------------------
+//should ideally downmix the audio in myFeatures
+
+vector<float> ofApp::downMixAudio(float* inputLeft, float* inputRight, int bufferSize) {
+
+    downMixed.resize(BUFFERSIZE);
+    
+    for(int i = 0; i < bufferSize; i=i+2) {
+//        leftInput[i/2] = inputLeft[i];
+//        rightInput[i/2] = inputRight[i];
+        
+        downMixed[i/2] = (inputLeft[i]+inputRight[i])*0.5;
+    }
+    return  downMixed;
+}
+//--------------------------------------------------------------
+
+void ofApp::blockAndProcessAudioData(float *input, int bufferSize, int nChannels) {
+    
+    numHops = 0;
+    
+    //task : Use circular mapping to pointer to improve performance
+    
+    if (numHops > OVERLAPMULTIPLE-1) {
+        processBlock(block,BUFFERSIZE*OVERLAPMULTIPLE,nChannels);
+        //Shift block data to left
+        copy(block+BUFFERSIZE, block+BUFFERSIZE*OVERLAPMULTIPLE, &block[0]);
+        //Push the last hop into the block
+        copy(input, input + BUFFERSIZE, &block[BUFFERSIZE*(OVERLAPMULTIPLE-1)]);
+    }
+    else {
+        copy(input, input + BUFFERSIZE, &block[NUMHOPS*BUFFERSIZE]);
+        numHops++;
+    }
+
+}
+
+//-----------------------------------------------
 
 void ofApp::processBlock(float* window, int windowBufferSize, int nChannels){
+    
+    for (int i=0; i<windowBufferSize; i++) {
+        leftInput[i] = window[i];
+    }
+    
+    soundMutex.lock();
+    middleInput = leftInput;
+    soundMutex.unlock();
     
     features->extractFeatures(window,nChannels);
     
@@ -308,49 +367,12 @@ void ofApp::processBlock(float* window, int windowBufferSize, int nChannels){
     middleBins = audioBins;
     soundMutex.unlock();
     
-    //-----------
+    
+#ifdef TEST
     testFeatures();
-    //-----------
+#endif
+    
 }
-
-//---------
-
-void ofApp::audioReceived(float* input, int BUFFERSIZE, int nChannels) {
-    
-    float* inputLeft = input;
-    float* inputRight;
-    
-    if (nChannels == 2) {
-       inputRight = input + BUFFERSIZE; //not used for now
-    }
-
-    //task : Use circular mapping to pointer to improve performance
-    
-    if (soundStream.getTickCount() > OVERLAPMULTIPLE-1) {
-        processBlock(block,BUFFERSIZE*OVERLAPMULTIPLE,nChannels);
-        //Shift block data to left
-        copy(block+BUFFERSIZE, block+BUFFERSIZE*OVERLAPMULTIPLE, &block[0]);
-        //Push the last hop into the block
-        copy(inputLeft, inputLeft + BUFFERSIZE, &block[BUFFERSIZE*(OVERLAPMULTIPLE-1)]);
-    }
-    else {
-        copy(inputLeft, inputLeft + BUFFERSIZE, &block[NUMHOPS*BUFFERSIZE]);
-        NUMHOPS++;
-    }
-    
-    //Store the input in the leftInput
-    for(int i = 0; i < BUFFERSIZE; i++) {
-        leftInput[i] = input[i];
-    }
-    
-    //Store the input in the rightInput if stereo -- not being used for now
-    if (nChannels==2) {
-        for(int i = BUFFERSIZE; i < 2*BUFFERSIZE; i++) {
-            rightInput[i] = input[i];
-        }
-    }
-}
-//--------------------------------------------------------------
 
 //--------------------------------------------------------------
 void ofApp::keyPressed(int key){
@@ -364,7 +386,6 @@ void ofApp::keyPressed(int key){
         drawBool = ! drawBool;
     }
     if (key == 'k') {
-
     }
 }
 
@@ -407,3 +428,62 @@ void ofApp::gotMessage(ofMessage msg){
 void ofApp::dragEvent(ofDragInfo dragInfo){ 
 
 }
+
+#ifdef TEST
+//--------------------------------------------------------------
+void ofApp::testFeatures() {
+    
+    if (myfile.is_open()) {
+
+//        //Test Input
+//        soundMutex.lock();
+//        drawInput = middleInput;
+//        soundMutex.unlock();
+//
+//        for(int i=0;i<BUFFERSIZE*OVERLAPMULTIPLE;i++) {
+//            if (i==BUFFERSIZE*OVERLAPMULTIPLE-1) {
+//                myfile << drawInput[i]<<"\n";
+//            }
+//            else {
+//                myfile << drawInput[i]<<",";
+//            }
+//        }
+//        
+//        //Test Fft
+//        for(int i=0;i<513;i++) {
+//            if (i==512) {
+//                myfile << middleBins[i]<<"\n";
+//            }
+//            else {
+//                myfile << middleBins[i]<<",";
+//            }
+//        }
+
+         //Test Features
+        pitchChroma = features->getPitchChroma();
+        
+        myfile << features->getSpectralCentroid()<<","
+        << features->getSpectralDecrease()<<","
+        << features->getSpectralFlatness()<<","
+        << features->getSpectralFlux(0)<<","
+        << features->getSpectralRollOff(0)<<","
+        << features->getSpectralSpread()<<","
+        << pitchChroma[0]<<","
+        << pitchChroma[1]<<","
+        << pitchChroma[2]<<","
+        << pitchChroma[3]<<","
+        << pitchChroma[4]<<","
+        << pitchChroma[5]<<","
+        << pitchChroma[6]<<","
+        << pitchChroma[7]<<","
+        << pitchChroma[8]<<","
+        << pitchChroma[9]<<","
+        << pitchChroma[10]<<","
+        << pitchChroma[11]<<"\n";
+
+    }
+}
+
+#endif
+
+

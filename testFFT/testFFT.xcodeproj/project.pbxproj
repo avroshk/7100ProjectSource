@@ -18,6 +18,9 @@
 		CE574A541BEF427A006EB6F8 /* myEffects.cpp in Sources */ = {isa = PBXBuildFile; fileRef = CE574A521BEF427A006EB6F8 /* myEffects.cpp */; settings = {ASSET_TAGS = (); }; };
 		CE946E461BE9BE8A00AF294F /* myFeatures.cpp in Sources */ = {isa = PBXBuildFile; fileRef = CE946E441BE9BE8A00AF294F /* myFeatures.cpp */; settings = {ASSET_TAGS = (); }; };
 		CE9AA0FD1BF47CBE00C59D21 /* myUtils.cpp in Sources */ = {isa = PBXBuildFile; fileRef = CE9AA0FB1BF47CBE00C59D21 /* myUtils.cpp */; settings = {ASSET_TAGS = (); }; };
+		CEE031211C004B6700A4296E /* scUBlibsndfile.a in Frameworks */ = {isa = PBXBuildFile; fileRef = CEE0311A1C004B6700A4296E /* scUBlibsndfile.a */; settings = {ASSET_TAGS = (); }; };
+		CEE031221C004B6700A4296E /* libsndfile-1.lib in Frameworks */ = {isa = PBXBuildFile; fileRef = CEE0311D1C004B6700A4296E /* libsndfile-1.lib */; settings = {ASSET_TAGS = (); }; };
+		CEE031231C004B6700A4296E /* ofxLibsndFileRecorder.cpp in Sources */ = {isa = PBXBuildFile; fileRef = CEE0311F1C004B6700A4296E /* ofxLibsndFileRecorder.cpp */; settings = {ASSET_TAGS = (); }; };
 		D409288D137DB82107887FFD /* ofxFft.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 32CA89CD22339F4F9433CAF6 /* ofxFft.cpp */; };
 		E4328149138ABC9F0047C5CB /* openFrameworksDebug.a in Frameworks */ = {isa = PBXBuildFile; fileRef = E4328148138ABC890047C5CB /* openFrameworksDebug.a */; };
 		E45BE97B0E8CC7DD009D7055 /* AGL.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = E45BE9710E8CC7DD009D7055 /* AGL.framework */; };
@@ -93,6 +96,31 @@
 		CE946E451BE9BE8A00AF294F /* myFeatures.hpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; lineEnding = 0; path = myFeatures.hpp; sourceTree = "<group>"; xcLanguageSpecificationIdentifier = xcode.lang.cpp; };
 		CE9AA0FB1BF47CBE00C59D21 /* myUtils.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = myUtils.cpp; sourceTree = "<group>"; };
 		CE9AA0FC1BF47CBE00C59D21 /* myUtils.hpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; path = myUtils.hpp; sourceTree = "<group>"; };
+		CEE031161C004B6700A4296E /* sndfile.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = sndfile.h; sourceTree = "<group>"; };
+		CEE031171C004B6700A4296E /* sndfile.hh */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; path = sndfile.hh; sourceTree = "<group>"; };
+		CEE0311A1C004B6700A4296E /* scUBlibsndfile.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; path = scUBlibsndfile.a; sourceTree = "<group>"; };
+		CEE0311C1C004B6700A4296E /* libsndfile-1.dll */ = {isa = PBXFileReference; lastKnownFileType = file; path = "libsndfile-1.dll"; sourceTree = "<group>"; };
+		CEE0311D1C004B6700A4296E /* libsndfile-1.lib */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; path = "libsndfile-1.lib"; sourceTree = "<group>"; };
+		CEE0311F1C004B6700A4296E /* ofxLibsndFileRecorder.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = ofxLibsndFileRecorder.cpp; sourceTree = "<group>"; };
+		CEE031201C004B6700A4296E /* ofxLibsndFileRecorder.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ofxLibsndFileRecorder.h; sourceTree = "<group>"; };
+		CEE031281C00533000A4296E /* .gitkeep */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = .gitkeep; sourceTree = "<group>"; };
+		CEE031291C00533000A4296E /* afremov.jpg */ = {isa = PBXFileReference; lastKnownFileType = image.jpeg; path = afremov.jpg; sourceTree = "<group>"; };
+		CEE0312A1C00533000A4296E /* amanda.jpg */ = {isa = PBXFileReference; lastKnownFileType = image.jpeg; path = amanda.jpg; sourceTree = "<group>"; };
+		CEE0312B1C00533000A4296E /* features.csv */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = features.csv; sourceTree = "<group>"; };
+		CEE0312C1C00533000A4296E /* Helen.jpg */ = {isa = PBXFileReference; lastKnownFileType = image.jpeg; path = Helen.jpg; sourceTree = "<group>"; };
+		CEE0312D1C00533000A4296E /* liz.jpg */ = {isa = PBXFileReference; lastKnownFileType = image.jpeg; path = liz.jpg; sourceTree = "<group>"; };
+		CEE0312E1C00533000A4296E /* liz2.jpg */ = {isa = PBXFileReference; lastKnownFileType = image.jpeg; path = liz2.jpg; sourceTree = "<group>"; };
+		CEE0312F1C00533000A4296E /* niagara.jpg */ = {isa = PBXFileReference; lastKnownFileType = image.jpeg; path = niagara.jpg; sourceTree = "<group>"; };
+		CEE031301C00533000A4296E /* paris.jpg */ = {isa = PBXFileReference; lastKnownFileType = image.jpeg; path = paris.jpg; sourceTree = "<group>"; };
+		CEE031311C00533000A4296E /* paysage.jpg */ = {isa = PBXFileReference; lastKnownFileType = image.jpeg; path = paysage.jpg; sourceTree = "<group>"; };
+		CEE031321C00533000A4296E /* rains.jpg */ = {isa = PBXFileReference; lastKnownFileType = image.jpeg; path = rains.jpg; sourceTree = "<group>"; };
+		CEE031331C00533000A4296E /* shu.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = shu.png; sourceTree = "<group>"; };
+		CEE031341C00533000A4296E /* Shura.jpg */ = {isa = PBXFileReference; lastKnownFileType = image.jpeg; path = Shura.jpg; sourceTree = "<group>"; };
+		CEE031351C00533000A4296E /* Shura1.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = Shura1.png; sourceTree = "<group>"; };
+		CEE031361C00533000A4296E /* starrynight.jpg */ = {isa = PBXFileReference; lastKnownFileType = image.jpeg; path = starrynight.jpg; sourceTree = "<group>"; };
+		CEE031371C00533000A4296E /* testsample.wav */ = {isa = PBXFileReference; lastKnownFileType = audio.wav; path = testsample.wav; sourceTree = "<group>"; };
+		CEE031381C00533000A4296E /* uhp.jpg */ = {isa = PBXFileReference; lastKnownFileType = image.jpeg; path = uhp.jpg; sourceTree = "<group>"; };
+		CEE031391C00533000A4296E /* youare_demo.wav */ = {isa = PBXFileReference; lastKnownFileType = audio.wav; path = youare_demo.wav; sourceTree = "<group>"; };
 		D8952DEFF3CE56AC1009A996 /* ofxFftw.h */ = {isa = PBXFileReference; explicitFileType = sourcecode.c.h; fileEncoding = 30; name = ofxFftw.h; path = ../../../addons/ofxFft/src/ofxFftw.h; sourceTree = SOURCE_ROOT; };
 		DACFE8C08D7F4619176E65D7 /* kiss_fftr.c */ = {isa = PBXFileReference; explicitFileType = sourcecode.c.c; fileEncoding = 30; name = kiss_fftr.c; path = ../../../addons/ofxFft/libs/kiss/kiss_fftr.c; sourceTree = SOURCE_ROOT; };
 		E4328143138ABC890047C5CB /* openFrameworksLib.xcodeproj */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.pb-project"; name = openFrameworksLib.xcodeproj; path = ../../../libs/openFrameworksCompiled/project/osx/openFrameworksLib.xcodeproj; sourceTree = SOURCE_ROOT; };
@@ -125,11 +153,13 @@
 			buildActionMask = 2147483647;
 			files = (
 				E7F985F815E0DEA3003869B5 /* Accelerate.framework in Frameworks */,
+				CEE031221C004B6700A4296E /* libsndfile-1.lib in Frameworks */,
 				E7E077E815D3B6510020DFD4 /* QTKit.framework in Frameworks */,
 				E4EB6799138ADC1D00A09F29 /* GLUT.framework in Frameworks */,
 				E4328149138ABC9F0047C5CB /* openFrameworksDebug.a in Frameworks */,
 				E45BE97B0E8CC7DD009D7055 /* AGL.framework in Frameworks */,
 				E45BE97C0E8CC7DD009D7055 /* ApplicationServices.framework in Frameworks */,
+				CEE031211C004B6700A4296E /* scUBlibsndfile.a in Frameworks */,
 				E45BE97D0E8CC7DD009D7055 /* AudioToolbox.framework in Frameworks */,
 				E45BE97F0E8CC7DD009D7055 /* CoreAudio.framework in Frameworks */,
 				E45BE9800E8CC7DD009D7055 /* CoreFoundation.framework in Frameworks */,
@@ -195,6 +225,7 @@
 		BB4B014C10F69532006C3DED /* addons */ = {
 			isa = PBXGroup;
 			children = (
+				CEE031241C004B6D00A4296E /* ofxLibsndfileRecorder */,
 				BBC2B4228932C2AACC6701CF /* ofxFft */,
 			);
 			name = addons;
@@ -238,6 +269,104 @@
 			name = ofxFft;
 			sourceTree = "<group>";
 		};
+		CEE031131C004B6700A4296E /* libs */ = {
+			isa = PBXGroup;
+			children = (
+				CEE031141C004B6700A4296E /* libsndfile */,
+			);
+			name = libs;
+			path = "../../../addons/ofxLibsndfileRecorder-master/libs";
+			sourceTree = "<group>";
+		};
+		CEE031141C004B6700A4296E /* libsndfile */ = {
+			isa = PBXGroup;
+			children = (
+				CEE031151C004B6700A4296E /* include */,
+				CEE031181C004B6700A4296E /* lib */,
+			);
+			path = libsndfile;
+			sourceTree = "<group>";
+		};
+		CEE031151C004B6700A4296E /* include */ = {
+			isa = PBXGroup;
+			children = (
+				CEE031161C004B6700A4296E /* sndfile.h */,
+				CEE031171C004B6700A4296E /* sndfile.hh */,
+			);
+			path = include;
+			sourceTree = "<group>";
+		};
+		CEE031181C004B6700A4296E /* lib */ = {
+			isa = PBXGroup;
+			children = (
+				CEE031191C004B6700A4296E /* osx */,
+				CEE0311B1C004B6700A4296E /* vs2010 */,
+			);
+			path = lib;
+			sourceTree = "<group>";
+		};
+		CEE031191C004B6700A4296E /* osx */ = {
+			isa = PBXGroup;
+			children = (
+				CEE0311A1C004B6700A4296E /* scUBlibsndfile.a */,
+			);
+			path = osx;
+			sourceTree = "<group>";
+		};
+		CEE0311B1C004B6700A4296E /* vs2010 */ = {
+			isa = PBXGroup;
+			children = (
+				CEE0311C1C004B6700A4296E /* libsndfile-1.dll */,
+				CEE0311D1C004B6700A4296E /* libsndfile-1.lib */,
+			);
+			path = vs2010;
+			sourceTree = "<group>";
+		};
+		CEE0311E1C004B6700A4296E /* src */ = {
+			isa = PBXGroup;
+			children = (
+				CEE0311F1C004B6700A4296E /* ofxLibsndFileRecorder.cpp */,
+				CEE031201C004B6700A4296E /* ofxLibsndFileRecorder.h */,
+			);
+			name = src;
+			path = "../../../addons/ofxLibsndfileRecorder-master/src";
+			sourceTree = "<group>";
+		};
+		CEE031241C004B6D00A4296E /* ofxLibsndfileRecorder */ = {
+			isa = PBXGroup;
+			children = (
+				CEE031131C004B6700A4296E /* libs */,
+				CEE0311E1C004B6700A4296E /* src */,
+			);
+			name = ofxLibsndfileRecorder;
+			sourceTree = "<group>";
+		};
+		CEE031271C00533000A4296E /* data */ = {
+			isa = PBXGroup;
+			children = (
+				CEE031281C00533000A4296E /* .gitkeep */,
+				CEE031291C00533000A4296E /* afremov.jpg */,
+				CEE0312A1C00533000A4296E /* amanda.jpg */,
+				CEE0312B1C00533000A4296E /* features.csv */,
+				CEE0312C1C00533000A4296E /* Helen.jpg */,
+				CEE0312D1C00533000A4296E /* liz.jpg */,
+				CEE0312E1C00533000A4296E /* liz2.jpg */,
+				CEE0312F1C00533000A4296E /* niagara.jpg */,
+				CEE031301C00533000A4296E /* paris.jpg */,
+				CEE031311C00533000A4296E /* paysage.jpg */,
+				CEE031321C00533000A4296E /* rains.jpg */,
+				CEE031331C00533000A4296E /* shu.png */,
+				CEE031341C00533000A4296E /* Shura.jpg */,
+				CEE031351C00533000A4296E /* Shura1.png */,
+				CEE031361C00533000A4296E /* starrynight.jpg */,
+				CEE031371C00533000A4296E /* testsample.wav */,
+				CEE031381C00533000A4296E /* uhp.jpg */,
+				CEE031391C00533000A4296E /* youare_demo.wav */,
+			);
+			name = data;
+			path = bin/data;
+			sourceTree = "<group>";
+		};
 		E4328144138ABC890047C5CB /* Products */ = {
 			isa = PBXGroup;
 			children = (
@@ -263,6 +392,7 @@
 				E4B69E1C0A3A1BDC003C02F2 /* src */,
 				E4EEC9E9138DF44700A80321 /* openFrameworks */,
 				BB4B014C10F69532006C3DED /* addons */,
+				CEE031271C00533000A4296E /* data */,
 				E45BE5980E8CC70C009D7055 /* frameworks */,
 				E4B69B5B0A3A1756003C02F2 /* testFFTDebug.app */,
 			);
@@ -397,6 +527,7 @@
 				7A61C288AE942E5885881232 /* ofxEasyFft.cpp in Sources */,
 				D409288D137DB82107887FFD /* ofxFft.cpp in Sources */,
 				007F713E619B81D821BEA319 /* ofxFftBasic.cpp in Sources */,
+				CEE031231C004B6700A4296E /* ofxLibsndFileRecorder.cpp in Sources */,
 				29938E05AF78B3DF7A591187 /* ofxFftw.cpp in Sources */,
 				47741AD4D543009E4DF29CEA /* ofxProcessFFT.cpp in Sources */,
 				CE574A541BEF427A006EB6F8 /* myEffects.cpp in Sources */,
@@ -447,6 +578,12 @@
 					../../../addons/ofxFft/libs/fftw/lib/win32,
 					../../../addons/ofxFft/libs/kiss,
 					../../../addons/ofxFft/src,
+					../../../addons/ofxLibsndfileRecorder/libs,
+					../../../addons/ofxLibsndfileRecorder/libs/libsndfile,
+					../../../addons/ofxLibsndfileRecorder/libs/libsndfile/lib,
+					../../../addons/ofxLibsndfileRecorder/src,
+					../../../addons/ofxLibsndfileRecorder/libs/libsndfile/lib/osx,
+					../../../addons/ofxLibsndfileRecorder/libs/libsndfile/include,
 				);
 				MACOSX_DEPLOYMENT_TARGET = 10.6;
 				OTHER_CPLUSPLUSFLAGS = (
@@ -459,6 +596,7 @@
 					../../../addons/ofxFft/libs/fftw/lib/osx/fftw3f.a,
 				);
 				SDKROOT = macosx10.10;
+				USER_HEADER_SEARCH_PATHS = usr/local/Cellar;
 			};
 			name = Debug;
 		};
@@ -493,6 +631,12 @@
 					../../../addons/ofxFft/libs/fftw/lib/win32,
 					../../../addons/ofxFft/libs/kiss,
 					../../../addons/ofxFft/src,
+					../../../addons/ofxLibsndfileRecorder/libs,
+					../../../addons/ofxLibsndfileRecorder/libs/libsndfile,
+					../../../addons/ofxLibsndfileRecorder/libs/libsndfile/lib,
+					../../../addons/ofxLibsndfileRecorder/src,
+					../../../addons/ofxLibsndfileRecorder/libs/libsndfile/lib/osx,
+					../../../addons/ofxLibsndfileRecorder/libs/libsndfile/include,
 				);
 				MACOSX_DEPLOYMENT_TARGET = 10.6;
 				OTHER_CPLUSPLUSFLAGS = (
@@ -505,6 +649,7 @@
 					../../../addons/ofxFft/libs/fftw/lib/osx/fftw3f.a,
 				);
 				SDKROOT = macosx10.10;
+				USER_HEADER_SEARCH_PATHS = usr/local/Cellar;
 			};
 			name = Release;
 		};

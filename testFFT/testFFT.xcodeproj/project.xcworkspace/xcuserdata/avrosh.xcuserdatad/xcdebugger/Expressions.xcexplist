@@ -3,49 +3,44 @@
    version = "1.0">
    <ContextStates>
       <ContextState
-         contextName = "GLOBAL">
+         contextName = "ofApp::blockAndProcessAudioData(float*, int, int):ofApp.cpp">
          <PersistentStrings>
             <PersistentString
-               value = "*(float(*)[1024])signal">
-            </PersistentString>
-         </PersistentStrings>
-      </ContextState>
-      <ContextState
-         contextName = "ofApp::draw():ofApp.cpp">
-         <PersistentStrings>
-            <PersistentString
-               value = "pitchChroma">
-            </PersistentString>
-         </PersistentStrings>
-      </ContextState>
-      <ContextState
-         contextName = "ofApp::processBlock(float*, int, int):ofApp.cpp">
-         <PersistentStrings>
-            <PersistentString
-               value = "*(float(*)[512])window">
-            </PersistentString>
-            <PersistentString
-               value = "fft-&gt;getBinSize()">
+               value = "*(float(*)[1024])inputBrick">
             </PersistentString>
          </PersistentStrings>
       </ContextState>
       <ContextState
          contextName = "myFeatures::myFeatures(int, int):myFeatures.cpp">
-      </ContextState>
-      <ContextState
-         contextName = "ofApp::update():ofApp.cpp">
          <PersistentStrings>
             <PersistentString
-               value = "midiBins[0][k]">
+               value = "(numOctaves*12) +lowestMidiPitch">
             </PersistentString>
             <PersistentString
-               value = "(int(midiBins[0][k]) - lowestMidiPitch) % 12">
+               value = "">
             </PersistentString>
             <PersistentString
-               value = "chromaSum">
+               value = "filterWeights">
             </PersistentString>
             <PersistentString
-               value = "midiBins[1][k]">
+               value = "prevMidiPitch">
+            </PersistentString>
+            <PersistentString
+               value = "midiBins">
+            </PersistentString>
+            <PersistentString
+               value = "midis">
+            </PersistentString>
+         </PersistentStrings>
+      </ContextState>
+      <ContextState
+         contextName = "myFeatures::extractFeatures(float*, int):myFeatures.cpp">
+         <PersistentStrings>
+            <PersistentString
+               value = "sumOfFftBins">
+            </PersistentString>
+            <PersistentString
+               value = "*(float(*)[1024])fftData">
             </PersistentString>
          </PersistentStrings>
       </ContextState>
@@ -67,21 +62,77 @@
          contextName = "ofApp::audioReceived(float*, int, int):ofApp.cpp">
          <PersistentStrings>
             <PersistentString
-               value = "*(float (*)[1024])temp">
+               value = "*(float (*)[512])downMixedInput">
             </PersistentString>
             <PersistentString
-               value = "*(float (*)[512])input">
-            </PersistentString>
-            <PersistentString
-               value = "*(float (*)[1024])input">
+               value = "*(float (*)[512])inputLeft">
             </PersistentString>
             <PersistentString
                value = "*(float (*)[256])input">
+            </PersistentString>
+            <PersistentString
+               value = "*(float (*)[1024])temp">
+            </PersistentString>
+         </PersistentStrings>
+      </ContextState>
+      <ContextState
+         contextName = "ofApp::processBlock(float*, int, int):ofApp.cpp">
+         <PersistentStrings>
+            <PersistentString
+               value = "fft-&gt;getBinSize()">
+            </PersistentString>
+            <PersistentString
+               value = "*(float(*)[1024])window">
             </PersistentString>
          </PersistentStrings>
       </ContextState>
       <ContextState
          contextName = "myFeatures::resetFeatures():myFeatures.cpp">
+      </ContextState>
+      <ContextState
+         contextName = "ofApp::update():ofApp.cpp">
+         <PersistentStrings>
+            <PersistentString
+               value = "midiBins[0][k]">
+            </PersistentString>
+            <PersistentString
+               value = "(int(midiBins[0][k]) - lowestMidiPitch) % 12">
+            </PersistentString>
+            <PersistentString
+               value = "chromaSum">
+            </PersistentString>
+            <PersistentString
+               value = "midiBins[1][k]">
+            </PersistentString>
+            <PersistentString
+               value = "*(float(*)[600])buffer">
+            </PersistentString>
+            <PersistentString
+               value = "*(float(*)[256*4])block">
+            </PersistentString>
+         </PersistentStrings>
+      </ContextState>
+      <ContextState
+         contextName = "ofApp::draw():ofApp.cpp">
+         <PersistentStrings>
+            <PersistentString
+               value = "pitchChroma">
+            </PersistentString>
+         </PersistentStrings>
+      </ContextState>
+      <ContextState
+         contextName = "ofApp::downMixAudio(float*, float*, int):ofApp.cpp">
+         <PersistentStrings>
+            <PersistentString
+               value = "*(float (*)[512])inputLeft">
+            </PersistentString>
+            <PersistentString
+               value = "inputLeft[i]">
+            </PersistentString>
+            <PersistentString
+               value = "inputRight[i]">
+            </PersistentString>
+         </PersistentStrings>
       </ContextState>
       <ContextState
          contextName = "myFeatures::calcRms():myFeatures.cpp">
@@ -92,7 +143,43 @@
          </PersistentStrings>
       </ContextState>
       <ContextState
-         contextName = "myFeatures::extractFeatures(float*, int):myFeatures.cpp">
+         contextName = "myFeatures::calcSpectralFlux(float):myFeatures.cpp">
+         <PersistentStrings>
+            <PersistentString
+               value = "fftData">
+            </PersistentString>
+            <PersistentString
+               value = "sumOfFftBins">
+            </PersistentString>
+         </PersistentStrings>
+      </ContextState>
+      <ContextState
+         contextName = "myFeatures::calcPitchChroma():myFeatures.cpp">
+         <PersistentStrings>
+            <PersistentString
+               value = "midiBins[0][k]">
+            </PersistentString>
+            <PersistentString
+               value = "midiBins[0][k-1]">
+            </PersistentString>
+            <PersistentString
+               value = "pitchChroma">
+            </PersistentString>
+            <PersistentString
+               value = "fftData">
+            </PersistentString>
+            <PersistentString
+               value = "midiValues">
+            </PersistentString>
+         </PersistentStrings>
+      </ContextState>
+      <ContextState
+         contextName = "myFeatures::calcFft():myFeatures.cpp">
+         <PersistentStrings>
+            <PersistentString
+               value = "fftData">
+            </PersistentString>
+         </PersistentStrings>
       </ContextState>
    </ContextStates>
 </VariablesViewState>
