@@ -14,9 +14,6 @@
          contextName = "myFeatures::myFeatures(int, int):myFeatures.cpp">
          <PersistentStrings>
             <PersistentString
-               value = "(numOctaves*12) +lowestMidiPitch">
-            </PersistentString>
-            <PersistentString
                value = "">
             </PersistentString>
             <PersistentString
@@ -24,6 +21,9 @@
             </PersistentString>
             <PersistentString
                value = "prevMidiPitch">
+            </PersistentString>
+            <PersistentString
+               value = "(numOctaves*12) +lowestMidiPitch">
             </PersistentString>
             <PersistentString
                value = "midiBins">
@@ -121,16 +121,27 @@
          </PersistentStrings>
       </ContextState>
       <ContextState
+         contextName = "myFeatures::getMostNotableOnsets():myFeatures.cpp">
+         <PersistentStrings>
+            <PersistentString
+               value = "adaptiveThreshold">
+            </PersistentString>
+            <PersistentString
+               value = "getSpectralFlux(0.0)">
+            </PersistentString>
+         </PersistentStrings>
+      </ContextState>
+      <ContextState
          contextName = "ofApp::downMixAudio(float*, float*, int):ofApp.cpp">
          <PersistentStrings>
+            <PersistentString
+               value = "inputRight[i]">
+            </PersistentString>
             <PersistentString
                value = "*(float (*)[512])inputLeft">
             </PersistentString>
             <PersistentString
                value = "inputLeft[i]">
-            </PersistentString>
-            <PersistentString
-               value = "inputRight[i]">
             </PersistentString>
          </PersistentStrings>
       </ContextState>
@@ -160,10 +171,10 @@
                value = "midiBins[0][k]">
             </PersistentString>
             <PersistentString
-               value = "midiBins[0][k-1]">
+               value = "pitchChroma">
             </PersistentString>
             <PersistentString
-               value = "pitchChroma">
+               value = "midiBins[0][k-1]">
             </PersistentString>
             <PersistentString
                value = "fftData">

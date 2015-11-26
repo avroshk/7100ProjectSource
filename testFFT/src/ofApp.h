@@ -8,8 +8,17 @@
 #include "ofxLibsndFileRecorder.h"
 #include "sndfile.h"
 
-const int HEIGHT = 784;//rains
-const int WIDTH = 628;
+const int HEIGHT = 600;//rains
+const int WIDTH = 728;
+const string IMGFILE = "helen.jpg";
+
+//const int HEIGHT = 610;//shura
+//const int WIDTH = 610;
+//const string IMGFILE = "Shura1.png";
+//const int HEIGHT = 610;//shura
+//const int WIDTH = 610;
+//const string IMGFILE = "Shura1.png";
+
 
 const int BUFFERSIZE = 256;
 const int OVERLAPMULTIPLE = 4;
@@ -23,7 +32,7 @@ const int OUTPUTS = 0;
   1 - at couch - Microphone Input
   2 - at home - SoundFlower
   3 - at couch - SoundFlower */
-const int DEVICEID = 3;
+const int DEVICEID = 3  ;
 
 class ofApp : public ofBaseApp{
     
@@ -49,6 +58,8 @@ class ofApp : public ofBaseApp{
     void processBlock(float* block, int windowBuffer, int nChannels);
     
     //Test features ------
+//     ofstream myfile;
+//        void testFeatures();
 #ifdef TEST
     ofstream myfile;
     SndfileHandle myAudioFile;
@@ -68,7 +79,8 @@ class ofApp : public ofBaseApp{
     
     vector<float> drawBins, middleBins, audioBins, leftInput, rightInput, downMixedInput, pitchChroma, normalizedInput,drawInput, middleInput, downMixed;
     
-    float* block, buffer;
+    float* block;
+    float* buffer;
     int numHops;
     
     //Mapping ---------
@@ -80,9 +92,11 @@ class ofApp : public ofBaseApp{
     myEffects *effects;
     ofMesh *meshGrid;
     ofMesh mesh, *mesh1;
-    ofImage* myImage;
+    ofImage *myImage;
+    ofImage img1, img2, img3, img4;
     
-    bool succ,alphaBool,zeeBool,drawBool;
+    bool succ,alphaBool,zeeBool,drawBool,flipBool;
+    bool bool1,bool2,bool3,bool4,boolAll;
  
     
     //---- temp

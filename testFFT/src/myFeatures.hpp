@@ -52,6 +52,8 @@ public:
     float getPitchChromaFlatness();
     float getPitchChromaCrestFactor();
     bool spectralFluxLevelCrossingRateChanged();
+    bool getMostNotableOnsets();
+    float getAdaptiveThreshold();
 
     vector<float> getNormalizedFeatureSet();
     
@@ -74,7 +76,12 @@ private:
     float instantaneousPitch, instantaneousSCR, instantaneousPCC;
     float sumOfFftBins,sumOfNormFftBins,rms;
     
-    int LCRFlux = 0; //global counter
+    int LCRFlux = 0; //global counter in myFeatures
+    float adaptiveThreshold = 0.0000125; //global
+    bool flagAdaptiveThreshold = false;
+    bool prevFlagAdaptiveThreshold = false;
+    int thresholdClockValue = 50;
+    int thresholdClock = thresholdClockValue;
     
     float alphaFlux,alphaRollOff;
     

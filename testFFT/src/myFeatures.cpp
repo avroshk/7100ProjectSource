@@ -187,6 +187,35 @@ bool myFeatures::spectralFluxLevelCrossingRateChanged() {
     return false;
 }
 
+bool myFeatures::getMostNotableOnsets() {
+    if (thresholdClock >=thresholdClockValue) {
+        if (getSpectralFlux(0.0) > adaptiveThreshold) {
+            flagAdaptiveThreshold = true;
+            if (!prevFlagAdaptiveThreshold && flagAdaptiveThreshold) {
+                prevFlagAdaptiveThreshold = flagAdaptiveThreshold;
+                thresholdClock--;
+                return true;
+            }
+        }
+        else {
+            flagAdaptiveThreshold = false;
+        }
+    }
+    if (thresholdClock <= 0) {
+        thresholdClock =thresholdClockValue;
+    }
+    else if (thresholdClock < thresholdClockValue) {
+        thresholdClock--;
+    }
+    
+    prevFlagAdaptiveThreshold = flagAdaptiveThreshold;
+    return false;
+}
+
+float myFeatures::getAdaptiveThreshold() {
+    return adaptiveThreshold;
+}
+
 //<<<<<<<<<<< get methods end -------------
 
 void myFeatures::normalizeInputAudioBlock() {
@@ -289,8 +318,7 @@ void myFeatures::calcSpectralFlux(float degree) {
     
     instantaneousFlux = pow(instantaneousFlux, (float)1.0/degree)/fftSize;
     
-    //Normalize
-//    instantaneousFlux /= maxAmpl; //not needed
+//    adaptiveThreshold = (adaptiveThreshold + pow(instantaneousFlux,2))/2;
 
     if (instantaneousFlux > instantaneousFluxThreshold) {
         LCRFlux++;
@@ -309,8 +337,8 @@ void myFeatures::calcSpectralRollOff(float rollOffPerc) {
         }
     }
     
-    instantaneousRollOff = (float) i/fftSize; //Normalized output
-}
+    //Normalize
+    instantaneousRollOff = (float) i/fftSize; }
 
 void myFeatures::calcSpectralCentroid() {
     float sumSC=0, curSumSC=0;
@@ -328,6 +356,7 @@ void myFeatures::calcSpectralCentroid() {
     }
 
     //Normalize
+    instantaneousSC /= fftSize;
 }
 
 void myFeatures::calcSpectralSpread() {
@@ -563,7 +592,12 @@ void myFeatures::calcPitchChromaFlatness() {
 }
 
 float myFeatures::calcPitchChromaCrestFactor(float maxPitchChroma) {
-    return (maxPitchChroma/chromaSum);
+    try {
+        return (maxPitchChroma/chromaSum);
+    } catch (logic_error e) {
+        return 0;
+    }
+    
 }
 
 vector<float> myFeatures::getNormalizedFeatureSet() {

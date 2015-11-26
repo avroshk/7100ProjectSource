@@ -20,11 +20,12 @@ public:
     void applyJitterToMesh(float);
     void refreshMesh();
     ofImage* getImage();
+    ofImage* getMirrorImage();
     ofMesh* getMeshGrid();
     ofMesh* getMesh();
     
 private:
-    ofImage myImage;
+    ofImage myImage, mirrorImage;
     ofMesh mesh, meshGrid, backupMesh;
     
     vector<ofVec3f> offsets;
@@ -33,6 +34,7 @@ private:
     
     void setUpMeshVertices();
     void setUpTriangleIndices();
+    void setMeshTexture(ofMesh m);
     
     int imageHeight;
     int imageWidth;

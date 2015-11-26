@@ -10,6 +10,9 @@
 
 myEffects::myEffects(string imageFileName,int width, int height) {
     succ = myImage.loadImage(imageFileName);
+    mirrorImage = myImage;
+    mirrorImage.mirror(false, true);
+    
     imageHeight = height;
     imageWidth = width;
     
@@ -17,13 +20,15 @@ myEffects::myEffects(string imageFileName,int width, int height) {
     setUpTriangleIndices();
     backupMesh = meshGrid;
     
- 
-    
     
 }
 
 ofImage* myEffects::getImage() {
     return &myImage;
+}
+
+ofImage* myEffects::getMirrorImage() {
+    return &mirrorImage;
 }
 
 ofMesh* myEffects::getMeshGrid() {
@@ -40,8 +45,10 @@ void myEffects::setUpMeshVertices() {
     //Set up vertices
     for (int y=0; y<H; y++) {
         for (int x=0; x<W; x++) {
-            meshGrid.addVertex(ofPoint((x - W/2) * meshSize, (y - H/2) * meshSize, 0 )); // adding texure coordinates allows us to bind textures to it later // --> this could be made into a function so that textures can be swapped / updated
             
+            
+            meshGrid.addVertex(ofPoint((x - W/2) * meshSize, (y - H/2) * meshSize, 0));
+            // textures can be swapped / updated by calling this function
 //            ofColor c = myImage.getColor(x, y);
 //            float intensity = c.getLightness();
 //            if (intensity >= intensityThreshold) {
@@ -55,7 +62,6 @@ void myEffects::setUpMeshVertices() {
             offsets.push_back(ofVec3f(ofRandom(0,100000), ofRandom(0,100000), ofRandom(0,100000)));
         }
     }
-    
 }
 
 void myEffects::setUpTriangleIndices() {

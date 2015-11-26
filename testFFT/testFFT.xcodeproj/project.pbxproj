@@ -92,8 +92,8 @@
 		CE574A521BEF427A006EB6F8 /* myEffects.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = myEffects.cpp; sourceTree = "<group>"; };
 		CE574A531BEF427A006EB6F8 /* myEffects.hpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; path = myEffects.hpp; sourceTree = "<group>"; };
 		CE67198F2891A8FFEA3686E6 /* ofxFftBasic.cpp */ = {isa = PBXFileReference; explicitFileType = sourcecode.cpp.cpp; fileEncoding = 30; name = ofxFftBasic.cpp; path = ../../../addons/ofxFft/src/ofxFftBasic.cpp; sourceTree = SOURCE_ROOT; };
-		CE946E441BE9BE8A00AF294F /* myFeatures.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; lineEnding = 0; path = myFeatures.cpp; sourceTree = "<group>"; xcLanguageSpecificationIdentifier = xcode.lang.cpp; };
-		CE946E451BE9BE8A00AF294F /* myFeatures.hpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; lineEnding = 0; path = myFeatures.hpp; sourceTree = "<group>"; xcLanguageSpecificationIdentifier = xcode.lang.cpp; };
+		CE946E441BE9BE8A00AF294F /* myFeatures.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; lineEnding = 0; path = myFeatures.cpp; sourceTree = "<group>"; };
+		CE946E451BE9BE8A00AF294F /* myFeatures.hpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; lineEnding = 0; path = myFeatures.hpp; sourceTree = "<group>"; };
 		CE9AA0FB1BF47CBE00C59D21 /* myUtils.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = myUtils.cpp; sourceTree = "<group>"; };
 		CE9AA0FC1BF47CBE00C59D21 /* myUtils.hpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; path = myUtils.hpp; sourceTree = "<group>"; };
 		CEE031161C004B6700A4296E /* sndfile.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = sndfile.h; sourceTree = "<group>"; };

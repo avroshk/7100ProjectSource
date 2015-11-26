@@ -11,10 +11,14 @@ void ofApp::setup(){
     ofSetVerticalSync(true);
     plotHeight = 128;
     
+//    const char* testoutput_fn= "/Users/avrosh/Documents/of_v0.8.4_osx_release/apps/myApps/testFFT/bin/data/features.csv";
+//    myfile.open(testoutput_fn);
+//    myfile.clear();
+    
 #ifdef TEST
     /* write results into a csv file */
-    string testoutput_fn = "/Users/avrosh/Documents/of_v0.8.4_osx_release/apps/myApps/testFFT/bin/data/features.csv";
-    string audiosample_fn = "/Users/avrosh/Documents/of_v0.8.4_osx_release/apps/myApps/testFFT/bin/data/funfair.wav";
+    const char*  testoutput_fn = "/Users/avrosh/Documents/of_v0.8.4_osx_release/apps/myApps/testFFT/bin/data/features.csv";
+    const char*  audiosample_fn = "/Users/avrosh/Documents/of_v0.8.4_osx_release/apps/myApps/testFFT/bin/data/funfair.wav";
     
     myfile.open (testoutput_fn);
     myfile.clear();
@@ -25,7 +29,7 @@ void ofApp::setup(){
     
     // -- for audio streamed from file -- // end //
 #else
-//    soundStream.listDevices(); --uncomment to print list og available devices
+    soundStream.listDevices(); //uncomment to print list of available devices
     soundStream.setDeviceID(DEVICEID);
     soundStream.setup(this, OUTPUTS, INPUTS, SAMPLERATE, BUFFERSIZE, NBUFFERS);
 #endif
@@ -35,6 +39,8 @@ void ofApp::setup(){
     middleInput.resize(BUFFERSIZE*OVERLAPMULTIPLE,0.0);
     
     block = new float[BUFFERSIZE*OVERLAPMULTIPLE];
+    numHops = 0;
+    tempMax = 0;
     
     //Stereo
     if(INPUTS == 2) {
@@ -50,8 +56,8 @@ void ofApp::setup(){
     // ------ Features setup -------
     
     features = new myFeatures(SAMPLERATE,BUFFERSIZE*OVERLAPMULTIPLE);
-    features->LCRFluxThreshold = 40;
-    features->instantaneousFluxThreshold = 0.8;
+    features->LCRFluxThreshold = 50;
+    features->instantaneousFluxThreshold = 0.0005;
     
     drawBins.resize(features->getFftSize());
     middleBins.resize(features->getFftSize());
@@ -69,9 +75,21 @@ void ofApp::setup(){
     // ------ Image setup -----------
     
     /*create a offset with the background image by sending different image dimensions here */
-    effects = new myEffects("helen.jpg",WIDTH,HEIGHT);
+    effects = new myEffects(IMGFILE,WIDTH,HEIGHT);
     
     myImage = effects->getImage();
+    img1 = *myImage;
+    img1.crop(0, 0, myImage->getWidth()/2, myImage->getHeight()/2);
+    img1.resize(img1.getWidth()*2, img1.getHeight()*2);
+    img2 = *myImage;
+    img2.crop(myImage->getWidth()/2, 0, myImage->getWidth()/2, myImage->getHeight()/2);
+    img2.resize(img2.getWidth()*2, img2.getHeight()*2);
+    img3 = *myImage;
+    img3.crop(0, myImage->getHeight()/2, myImage->getWidth()/2, myImage->getHeight()/2);
+    img3.resize(img3.getWidth()*2, img3.getHeight()*2);
+    img4 = *myImage;
+    img4.crop(myImage->getWidth()/2, myImage->getHeight()/2, myImage->getWidth()/2, myImage->getHeight()/2);
+    img4.resize(img4.getWidth()*2, img4.getHeight()*2);
     
     // ------ Graphics setup -----
     ofBackground(0, 0, 0);
@@ -102,7 +120,7 @@ void ofApp::update() {
     float feature1 = featureMap->getFeatureForEffect(0, features->getNormalizedFeatureSet());
     float feature2 = featureMap->getFeatureForEffect(1, features->getNormalizedFeatureSet());
     
-    effects->applyNoiseToMesh(ofMap(features->getSpectralRollOff(0.5),0,1,0,0.1),ofMap(features->getSpectralFlux(0.5),0,1,0,0.1),ofMap(features->getSpectralRollOff(0.5), 0, 0.5, 0.05, 0.35));
+    effects->applyNoiseToMesh(ofMap(features->getSpectralRollOff(0.5),0,1,0,0.05),ofMap(features->getSpectralFlux(0.5),0,0.1,0,0.05),ofMap(features->getSpectralRollOff(0.5), 0, 0.5, 0.05, 0.20));
     
     effects->applyJitterToMesh(features->getPitchChromaCrestFactor());
     
@@ -113,6 +131,32 @@ void ofApp::update() {
     if (features->spectralFluxLevelCrossingRateChanged()) {
         effects->refreshMesh();
     }
+    
+    if(features->getMostNotableOnsets()) {
+        tempMax++;
+        if (tempMax>10) {
+            flipBool = !flipBool;
+            tempMax = 0;
+        }
+    }
+    
+    if(features->getSpectralDecrease() < -0.1) {
+        bool1 = !bool1;
+    }
+    
+    if(features->getSpectralRollOff(0.5) > 0.1) {
+        bool2 = !bool2;
+    }
+    
+    if(features->getSpectralFlatness() > 0.02) {
+        bool3 = !bool3;
+    }
+    if(features->getPitchChromaCrestFactor() > 0.02) {
+        bool4 = !bool4;
+    }
+    
+    
+//     if(features->getMostNotableOnsets()) { tempMax++;}
 }
 
 //--------------------------------------------------------------
@@ -133,7 +177,7 @@ void ofApp::draw(){
     float alpha2 = ofMap(features->getSpectralRollOff(0.5)*10.0f, 0, 1, 180, 255);
     //    float alpha = ofMap(ofGetMouseX(), 0, ofGetWidth(), 0, 255);
     
-    if(features->getSpectralCentroid() > tempMax) { tempMax = features->getSpectralCentroid();}
+   
     
     //----------------------------------------------------------
     
@@ -254,12 +298,32 @@ void ofApp::draw(){
         }
     }
     else{
-        myImage->draw(0,0);
+            if (bool1) {
+                img1.draw(0,0);
+            }
+            else if (bool2) {
+                img2.draw(0,0);
+            }
+            else if (bool3) {
+                img3.draw(0,0);
+            }
+            else if (bool4) {
+                img4.draw(0,0);
+            }
+            else {
+                myImage->draw(0,0);
+            }
     }
     
     effects->applyAlphaToTexture(alpha2, alpha);
     
-    myImage->bind();
+    if (flipBool) {
+        myImage->bind();
+    }
+    else {
+        effects->getMirrorImage()->bind();
+    }
+    
     
     ofPushMatrix(); //Store the coordinate system
     ofTranslate( ofGetWidth()/2, ofGetHeight()/2, 0 );  //Move the coordinate center to screen's center
@@ -269,7 +333,13 @@ void ofApp::draw(){
     ofPopMatrix(); //Restore the coordinate system
     
 //    mesh.draw();
-    myImage->unbind();
+    if (flipBool) {
+        myImage->unbind();
+    }
+    else {
+        effects->getMirrorImage()->unbind();
+    }
+    
     
     fbo.end();
     
@@ -329,8 +399,6 @@ vector<float> ofApp::downMixAudio(float* inputLeft, float* inputRight, int buffe
 
 void ofApp::blockAndProcessAudioData(float *input, int bufferSize, int nChannels) {
     
-    numHops = 0;
-    
     //task : Use circular mapping to pointer to improve performance
     
     if (numHops > OVERLAPMULTIPLE-1) {
@@ -361,13 +429,12 @@ void ofApp::processBlock(float* window, int windowBufferSize, int nChannels){
     
     features->extractFeatures(window,nChannels);
     
-    audioBins = features->getFftData();
+    audioBins = features->getNormalizedFftData();
     
     soundMutex.lock();
     middleBins = audioBins;
     soundMutex.unlock();
-    
-    
+
 #ifdef TEST
     testFeatures();
 #endif
@@ -386,6 +453,22 @@ void ofApp::keyPressed(int key){
         drawBool = ! drawBool;
     }
     if (key == 'k') {
+        flipBool = !flipBool;
+    }
+    if (key == '1') {
+        bool1 = !bool1;
+    }
+    if (key == '2') {
+        bool2 = !bool2;
+    }
+    if (key == '3') {
+        bool3 = !bool3;
+    }
+    if (key == '4') {
+        bool4 = !bool4;
+    }
+    if (key == '5') {
+        boolAll = !boolAll;
     }
 }
 
@@ -460,26 +543,35 @@ void ofApp::testFeatures() {
 //        }
 
          //Test Features
-        pitchChroma = features->getPitchChroma();
+//        pitchChroma = features->getPitchChroma();
+//        
+//        myfile << features->getSpectralCentroid()<<","
+//        << features->getSpectralDecrease()<<","
+//        << features->getSpectralFlatness()<<","
+//        << features->getSpectralFlux(0)<<","
+//        << features->getSpectralRollOff(0)<<","
+//        << features->getSpectralSpread()<<","
+//        << pitchChroma[0]<<","
+//        << pitchChroma[1]<<","
+//        << pitchChroma[2]<<","
+//        << pitchChroma[3]<<","
+//        << pitchChroma[4]<<","
+//        << pitchChroma[5]<<","
+//        << pitchChroma[6]<<","
+//        << pitchChroma[7]<<","
+//        << pitchChroma[8]<<","
+//        << pitchChroma[9]<<","
+//        << pitchChroma[10]<<","
+//        << pitchChroma[11]<<"\n";
         
-        myfile << features->getSpectralCentroid()<<","
-        << features->getSpectralDecrease()<<","
-        << features->getSpectralFlatness()<<","
-        << features->getSpectralFlux(0)<<","
-        << features->getSpectralRollOff(0)<<","
-        << features->getSpectralSpread()<<","
-        << pitchChroma[0]<<","
-        << pitchChroma[1]<<","
-        << pitchChroma[2]<<","
-        << pitchChroma[3]<<","
-        << pitchChroma[4]<<","
-        << pitchChroma[5]<<","
-        << pitchChroma[6]<<","
-        << pitchChroma[7]<<","
-        << pitchChroma[8]<<","
-        << pitchChroma[9]<<","
-        << pitchChroma[10]<<","
-        << pitchChroma[11]<<"\n";
+        bool todo = features->getMostNotableOnsets();
+        if (todo) {
+            tempMax++;
+        }
+        
+        myfile << features->getSpectralFlux(0.0)<<","
+                <<features->getAdaptiveThreshold()<<","
+                <<todo<<"\n";
 
     }
 }

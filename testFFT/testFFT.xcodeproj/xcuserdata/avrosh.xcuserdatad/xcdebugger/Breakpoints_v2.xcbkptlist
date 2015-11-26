@@ -10,11 +10,11 @@
             ignoreCount = "0"
             continueAfterRunningActions = "No"
             filePath = "src/ofApp.cpp"
-            timestampString = "470115131.801039"
+            timestampString = "470175328.886414"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "291"
-            endingLineNumber = "291"
+            startingLineNumber = "247"
+            endingLineNumber = "247"
             landmarkName = "ofApp::draw()"
             landmarkType = "5">
          </BreakpointContent>
@@ -26,43 +26,11 @@
             ignoreCount = "0"
             continueAfterRunningActions = "No"
             filePath = "src/ofApp.cpp"
-            timestampString = "470115131.801039"
+            timestampString = "470175328.886414"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "338"
-            endingLineNumber = "338"
-            landmarkName = "ofApp::draw()"
-            landmarkType = "5">
-         </BreakpointContent>
-      </BreakpointProxy>
-      <BreakpointProxy
-         BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
-         <BreakpointContent
-            shouldBeEnabled = "No"
-            ignoreCount = "0"
-            continueAfterRunningActions = "No"
-            filePath = "src/ofApp.cpp"
-            timestampString = "470115131.801039"
-            startingColumnNumber = "9223372036854775807"
-            endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "343"
-            endingLineNumber = "343"
-            landmarkName = "ofApp::draw()"
-            landmarkType = "5">
-         </BreakpointContent>
-      </BreakpointProxy>
-      <BreakpointProxy
-         BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
-         <BreakpointContent
-            shouldBeEnabled = "No"
-            ignoreCount = "0"
-            continueAfterRunningActions = "No"
-            filePath = "src/ofApp.cpp"
-            timestampString = "470115131.801039"
-            startingColumnNumber = "9223372036854775807"
-            endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "367"
-            endingLineNumber = "367">
+            startingLineNumber = "349"
+            endingLineNumber = "349">
          </BreakpointContent>
       </BreakpointProxy>
       <BreakpointProxy
@@ -72,11 +40,11 @@
             ignoreCount = "0"
             continueAfterRunningActions = "No"
             filePath = "src/myFeatures.cpp"
-            timestampString = "470110178.388507"
+            timestampString = "470166655.908724"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "299"
-            endingLineNumber = "299"
+            startingLineNumber = "265"
+            endingLineNumber = "265"
             landmarkName = "myFeatures::calcRms()"
             landmarkType = "5">
          </BreakpointContent>
@@ -88,11 +56,11 @@
             ignoreCount = "0"
             continueAfterRunningActions = "No"
             filePath = "src/ofApp.cpp"
-            timestampString = "470115131.801039"
+            timestampString = "470175328.886414"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "365"
-            endingLineNumber = "365"
+            startingLineNumber = "347"
+            endingLineNumber = "347"
             landmarkName = "ofApp::draw()"
             landmarkType = "5">
          </BreakpointContent>
@@ -104,11 +72,11 @@
             ignoreCount = "0"
             continueAfterRunningActions = "No"
             filePath = "src/myFeatures.cpp"
-            timestampString = "470110178.388507"
+            timestampString = "470166655.908724"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "313"
-            endingLineNumber = "313"
+            startingLineNumber = "279"
+            endingLineNumber = "279"
             landmarkName = "myFeatures::calcFft()"
             landmarkType = "5">
          </BreakpointContent>
@@ -120,11 +88,11 @@
             ignoreCount = "0"
             continueAfterRunningActions = "No"
             filePath = "src/ofApp.cpp"
-            timestampString = "469958469.50651"
+            timestampString = "470162772.874548"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "90"
-            endingLineNumber = "90"
+            startingLineNumber = "67"
+            endingLineNumber = "67"
             landmarkName = "ofApp::setup()"
             landmarkType = "5">
          </BreakpointContent>
@@ -136,11 +104,11 @@
             ignoreCount = "0"
             continueAfterRunningActions = "No"
             filePath = "src/myFeatures.cpp"
-            timestampString = "470110178.388507"
+            timestampString = "470166655.908724"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "538"
-            endingLineNumber = "538"
+            startingLineNumber = "609"
+            endingLineNumber = "609"
             landmarkName = "myFeatures::getNormalizedFeatureSet()"
             landmarkType = "5">
          </BreakpointContent>
@@ -152,11 +120,11 @@
             ignoreCount = "0"
             continueAfterRunningActions = "No"
             filePath = "src/myFeatures.cpp"
-            timestampString = "470110178.388507"
+            timestampString = "470166655.908724"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "472"
-            endingLineNumber = "472"
+            startingLineNumber = "451"
+            endingLineNumber = "451"
             landmarkName = "myFeatures::calcPitchChroma()"
             landmarkType = "5">
          </BreakpointContent>
@@ -168,11 +136,11 @@
             ignoreCount = "0"
             continueAfterRunningActions = "No"
             filePath = "src/myFeatures.cpp"
-            timestampString = "470110178.388507"
+            timestampString = "470166655.908724"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "303"
-            endingLineNumber = "303"
+            startingLineNumber = "269"
+            endingLineNumber = "269"
             landmarkName = "myFeatures::isSilenceDetected()"
             landmarkType = "5">
          </BreakpointContent>
@@ -184,11 +152,11 @@
             ignoreCount = "0"
             continueAfterRunningActions = "No"
             filePath = "src/myFeatures.cpp"
-            timestampString = "470110178.388507"
+            timestampString = "470166655.908724"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "367"
-            endingLineNumber = "367"
+            startingLineNumber = "324"
+            endingLineNumber = "324"
             landmarkName = "myFeatures::calcSpectralFlux(float degree)"
             landmarkType = "5">
          </BreakpointContent>
@@ -200,7 +168,7 @@
             ignoreCount = "0"
             continueAfterRunningActions = "No"
             filePath = "src/ofApp.cpp"
-            timestampString = "469951807.921191"
+            timestampString = "470162772.874548"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
             startingLineNumber = "36"
@@ -216,11 +184,11 @@
             ignoreCount = "0"
             continueAfterRunningActions = "No"
             filePath = "src/myFeatures.cpp"
-            timestampString = "470110178.388507"
+            timestampString = "470166655.908724"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "392"
-            endingLineNumber = "392"
+            startingLineNumber = "347"
+            endingLineNumber = "347"
             landmarkName = "myFeatures::calcSpectralCentroid()"
             landmarkType = "5">
          </BreakpointContent>
@@ -232,11 +200,11 @@
             ignoreCount = "0"
             continueAfterRunningActions = "No"
             filePath = "src/myFeatures.cpp"
-            timestampString = "470110178.388507"
+            timestampString = "470166655.908724"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "393"
-            endingLineNumber = "393"
+            startingLineNumber = "348"
+            endingLineNumber = "348"
             landmarkName = "myFeatures::calcSpectralCentroid()"
             landmarkType = "5">
          </BreakpointContent>
@@ -248,11 +216,11 @@
             ignoreCount = "0"
             continueAfterRunningActions = "No"
             filePath = "src/myFeatures.cpp"
-            timestampString = "470110178.388507"
+            timestampString = "470166655.908724"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "397"
-            endingLineNumber = "397"
+            startingLineNumber = "351"
+            endingLineNumber = "351"
             landmarkName = "myFeatures::calcSpectralCentroid()"
             landmarkType = "5">
          </BreakpointContent>
@@ -264,11 +232,11 @@
             ignoreCount = "0"
             continueAfterRunningActions = "No"
             filePath = "src/myFeatures.cpp"
-            timestampString = "470110178.388507"
+            timestampString = "470166655.908724"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "373"
-            endingLineNumber = "373"
+            startingLineNumber = "330"
+            endingLineNumber = "330"
             landmarkName = "myFeatures::calcSpectralRollOff(float rollOffPerc)"
             landmarkType = "5">
          </BreakpointContent>
@@ -280,11 +248,11 @@
             ignoreCount = "0"
             continueAfterRunningActions = "No"
             filePath = "src/myFeatures.cpp"
-            timestampString = "470110178.388507"
+            timestampString = "470166655.908724"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "383"
-            endingLineNumber = "383"
+            startingLineNumber = "341"
+            endingLineNumber = "341"
             landmarkName = "myFeatures::calcSpectralRollOff(float rollOffPerc)"
             landmarkType = "5">
          </BreakpointContent>
@@ -296,11 +264,11 @@
             ignoreCount = "0"
             continueAfterRunningActions = "No"
             filePath = "src/myEffects.cpp"
-            timestampString = "469344060.283445"
+            timestampString = "470170441.535625"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "13"
-            endingLineNumber = "13"
+            startingLineNumber = "16"
+            endingLineNumber = "16"
             landmarkName = "myEffects::myEffects(string imageFileName,int width, int height)"
             landmarkType = "5">
          </BreakpointContent>
@@ -312,11 +280,11 @@
             ignoreCount = "0"
             continueAfterRunningActions = "No"
             filePath = "src/myFeatures.cpp"
-            timestampString = "470110178.388507"
+            timestampString = "470166655.908724"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "350"
-            endingLineNumber = "350"
+            startingLineNumber = "308"
+            endingLineNumber = "308"
             landmarkName = "myFeatures::calcSpectralFlux(float degree)"
             landmarkType = "5">
          </BreakpointContent>
@@ -328,11 +296,11 @@
             ignoreCount = "0"
             continueAfterRunningActions = "No"
             filePath = "src/myFeatures.cpp"
-            timestampString = "470110178.388507"
+            timestampString = "470166655.908724"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "336"
-            endingLineNumber = "336"
+            startingLineNumber = "295"
+            endingLineNumber = "295"
             landmarkName = "myFeatures::calcSpectralFluxLog()"
             landmarkType = "5">
          </BreakpointContent>
@@ -344,11 +312,11 @@
             ignoreCount = "0"
             continueAfterRunningActions = "No"
             filePath = "src/myFeatures.cpp"
-            timestampString = "470110178.388507"
+            timestampString = "470166655.908724"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "361"
-            endingLineNumber = "361"
+            startingLineNumber = "319"
+            endingLineNumber = "319"
             landmarkName = "myFeatures::calcSpectralFlux(float degree)"
             landmarkType = "5">
          </BreakpointContent>
@@ -360,11 +328,11 @@
             ignoreCount = "0"
             continueAfterRunningActions = "No"
             filePath = "src/myFeatures.cpp"
-            timestampString = "470110178.388507"
+            timestampString = "470166655.908724"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "344"
-            endingLineNumber = "344"
+            startingLineNumber = "303"
+            endingLineNumber = "303"
             landmarkName = "myFeatures::calcSpectralFluxLog()"
             landmarkType = "5">
          </BreakpointContent>
@@ -377,11 +345,11 @@
             condition = "instantaneousFlux &gt; 1"
             continueAfterRunningActions = "No"
             filePath = "src/myFeatures.cpp"
-            timestampString = "470110178.388507"
+            timestampString = "470166655.908724"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "364"
-            endingLineNumber = "364"
+            startingLineNumber = "320"
+            endingLineNumber = "320"
             landmarkName = "myFeatures::calcSpectralFlux(float degree)"
             landmarkType = "5">
             <Actions>
@@ -401,11 +369,11 @@
             ignoreCount = "0"
             continueAfterRunningActions = "No"
             filePath = "src/ofApp.cpp"
-            timestampString = "470115131.801039"
+            timestampString = "470175328.886414"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "374"
-            endingLineNumber = "374"
+            startingLineNumber = "356"
+            endingLineNumber = "356"
             landmarkName = "ofApp::plot(vector&lt;float&gt;&amp; buffer, float scale, float offset)"
             landmarkType = "5">
          </BreakpointContent>
@@ -417,11 +385,11 @@
             ignoreCount = "0"
             continueAfterRunningActions = "No"
             filePath = "src/myFeatures.cpp"
-            timestampString = "470110178.388507"
+            timestampString = "470166655.908724"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "256"
-            endingLineNumber = "256"
+            startingLineNumber = "222"
+            endingLineNumber = "222"
             landmarkName = "myFeatures::normalizeInputAudioBlock()"
             landmarkType = "5">
          </BreakpointContent>
@@ -433,11 +401,11 @@
             ignoreCount = "0"
             continueAfterRunningActions = "No"
             filePath = "src/myFeatures.cpp"
-            timestampString = "470110178.388507"
+            timestampString = "470166655.908724"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "266"
-            endingLineNumber = "266"
+            startingLineNumber = "232"
+            endingLineNumber = "232"
             landmarkName = "myFeatures::normalizeInputAudioBlock()"
             landmarkType = "5">
          </BreakpointContent>
@@ -449,11 +417,11 @@
             ignoreCount = "0"
             continueAfterRunningActions = "No"
             filePath = "src/myFeatures.cpp"
-            timestampString = "470110178.388507"
+            timestampString = "470166655.908724"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "375"
-            endingLineNumber = "375"
+            startingLineNumber = "332"
+            endingLineNumber = "332"
             landmarkName = "myFeatures::calcSpectralRollOff(float rollOffPerc)"
             landmarkType = "5">
          </BreakpointContent>
@@ -465,11 +433,11 @@
             ignoreCount = "0"
             continueAfterRunningActions = "No"
             filePath = "src/myFeatures.cpp"
-            timestampString = "470110178.388507"
+            timestampString = "470166655.908724"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "379"
-            endingLineNumber = "379"
+            startingLineNumber = "336"
+            endingLineNumber = "336"
             landmarkName = "myFeatures::calcSpectralRollOff(float rollOffPerc)"
             landmarkType = "5">
          </BreakpointContent>
@@ -481,11 +449,11 @@
             ignoreCount = "0"
             continueAfterRunningActions = "No"
             filePath = "src/myFeatures.cpp"
-            timestampString = "470110178.388507"
+            timestampString = "470166655.908724"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "384"
-            endingLineNumber = "384"
+            startingLineNumber = "341"
+            endingLineNumber = "341"
             landmarkName = "myFeatures::calcSpectralRollOff(float rollOffPerc)"
             landmarkType = "5">
          </BreakpointContent>
@@ -497,11 +465,11 @@
             ignoreCount = "0"
             continueAfterRunningActions = "No"
             filePath = "src/ofApp.h"
-            timestampString = "469878550.496673"
+            timestampString = "470174105.018175"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "39"
-            endingLineNumber = "39"
+            startingLineNumber = "44"
+            endingLineNumber = "44"
             landmarkName = "class ofApp"
             landmarkType = "3">
          </BreakpointContent>
@@ -513,11 +481,11 @@
             ignoreCount = "0"
             continueAfterRunningActions = "No"
             filePath = "src/ofApp.h"
-            timestampString = "469958469.50651"
+            timestampString = "470174105.018175"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "102"
-            endingLineNumber = "102"
+            startingLineNumber = "106"
+            endingLineNumber = "106"
             landmarkName = "class ofApp"
             landmarkType = "3">
          </BreakpointContent>
@@ -529,11 +497,11 @@
             ignoreCount = "0"
             continueAfterRunningActions = "No"
             filePath = "src/myFeatures.cpp"
-            timestampString = "470110178.388507"
+            timestampString = "470166655.908724"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "255"
-            endingLineNumber = "255"
+            startingLineNumber = "221"
+            endingLineNumber = "221"
             landmarkName = "myFeatures::normalizeInputAudioBlock()"
             landmarkType = "5">
          </BreakpointContent>
@@ -545,11 +513,11 @@
             ignoreCount = "0"
             continueAfterRunningActions = "No"
             filePath = "src/ofApp.cpp"
-            timestampString = "470115131.801039"
+            timestampString = "470175328.886414"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "428"
-            endingLineNumber = "428"
+            startingLineNumber = "370"
+            endingLineNumber = "370"
             landmarkName = "ofApp::audioReceived(float* input, int bufferSize, int nChannels)"
             landmarkType = "5">
          </BreakpointContent>
@@ -593,11 +561,11 @@
             ignoreCount = "0"
             continueAfterRunningActions = "No"
             filePath = "src/myFeatures.cpp"
-            timestampString = "470110178.388507"
+            timestampString = "470166655.908724"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "366"
-            endingLineNumber = "366"
+            startingLineNumber = "323"
+            endingLineNumber = "323"
             landmarkName = "myFeatures::calcSpectralFlux(float degree)"
             landmarkType = "5">
          </BreakpointContent>
@@ -609,11 +577,11 @@
             ignoreCount = "0"
             continueAfterRunningActions = "No"
             filePath = "src/myFeatures.cpp"
-            timestampString = "470110178.388507"
+            timestampString = "470166655.908724"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "311"
-            endingLineNumber = "311"
+            startingLineNumber = "277"
+            endingLineNumber = "277"
             landmarkName = "myFeatures::calcFft()"
             landmarkType = "5">
          </BreakpointContent>
@@ -625,11 +593,11 @@
             ignoreCount = "0"
             continueAfterRunningActions = "No"
             filePath = "src/myFeatures.cpp"
-            timestampString = "470110178.388507"
+            timestampString = "470166655.908724"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "264"
-            endingLineNumber = "264"
+            startingLineNumber = "230"
+            endingLineNumber = "230"
             landmarkName = "myFeatures::normalizeInputAudioBlock()"
             landmarkType = "5">
          </BreakpointContent>
@@ -641,11 +609,11 @@
             ignoreCount = "0"
             continueAfterRunningActions = "No"
             filePath = "src/myFeatures.cpp"
-            timestampString = "470110178.388507"
+            timestampString = "470166655.908724"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "475"
-            endingLineNumber = "475"
+            startingLineNumber = "454"
+            endingLineNumber = "454"
             landmarkName = "myFeatures::calcPitchChroma()"
             landmarkType = "5">
          </BreakpointContent>
@@ -657,11 +625,11 @@
             ignoreCount = "0"
             continueAfterRunningActions = "No"
             filePath = "src/myFeatures.cpp"
-            timestampString = "470110178.388507"
+            timestampString = "470166655.908724"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "480"
-            endingLineNumber = "480"
+            startingLineNumber = "459"
+            endingLineNumber = "459"
             landmarkName = "myFeatures::calcPitchChroma()"
             landmarkType = "5">
          </BreakpointContent>
@@ -673,11 +641,11 @@
             ignoreCount = "0"
             continueAfterRunningActions = "No"
             filePath = "src/myFeatures.cpp"
-            timestampString = "470110178.388507"
+            timestampString = "470166655.908724"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "479"
-            endingLineNumber = "479"
+            startingLineNumber = "458"
+            endingLineNumber = "458"
             landmarkName = "myFeatures::calcPitchChroma()"
             landmarkType = "5">
          </BreakpointContent>
@@ -689,11 +657,11 @@
             ignoreCount = "0"
             continueAfterRunningActions = "No"
             filePath = "src/myFeatures.cpp"
-            timestampString = "470110178.388507"
+            timestampString = "470166655.908724"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "504"
-            endingLineNumber = "504"
+            startingLineNumber = "483"
+            endingLineNumber = "483"
             landmarkName = "myFeatures::calcPitchChroma()"
             landmarkType = "5">
          </BreakpointContent>
@@ -705,11 +673,11 @@
             ignoreCount = "0"
             continueAfterRunningActions = "No"
             filePath = "src/myFeatures.cpp"
-            timestampString = "470110178.388507"
+            timestampString = "470166655.908724"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "493"
-            endingLineNumber = "493"
+            startingLineNumber = "472"
+            endingLineNumber = "472"
             landmarkName = "myFeatures::calcPitchChroma()"
             landmarkType = "5">
          </BreakpointContent>
@@ -721,11 +689,11 @@
             ignoreCount = "0"
             continueAfterRunningActions = "No"
             filePath = "src/myFeatures.cpp"
-            timestampString = "470110178.388507"
+            timestampString = "470166655.908724"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "476"
-            endingLineNumber = "476"
+            startingLineNumber = "455"
+            endingLineNumber = "455"
             landmarkName = "myFeatures::calcPitchChroma()"
             landmarkType = "5">
          </BreakpointContent>
@@ -737,11 +705,11 @@
             ignoreCount = "0"
             continueAfterRunningActions = "No"
             filePath = "src/myFeatures.cpp"
-            timestampString = "470110178.388507"
+            timestampString = "470161597.247586"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "42"
-            endingLineNumber = "42"
+            startingLineNumber = "57"
+            endingLineNumber = "57"
             landmarkName = "myFeatures::myFeatures(int sRate, int bufSize)"
             landmarkType = "5">
          </BreakpointContent>
@@ -753,11 +721,11 @@
             ignoreCount = "0"
             continueAfterRunningActions = "No"
             filePath = "src/ofApp.cpp"
-            timestampString = "470115131.801039"
+            timestampString = "470175328.886414"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "234"
-            endingLineNumber = "234"
+            startingLineNumber = "190"
+            endingLineNumber = "190"
             landmarkName = "ofApp::draw()"
             landmarkType = "5">
          </BreakpointContent>
@@ -769,11 +737,11 @@
             ignoreCount = "0"
             continueAfterRunningActions = "No"
             filePath = "src/ofApp.cpp"
-            timestampString = "470115131.801039"
+            timestampString = "470175328.886414"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "370"
-            endingLineNumber = "370"
+            startingLineNumber = "352"
+            endingLineNumber = "352"
             landmarkName = "ofApp::plot(vector&lt;float&gt;&amp; buffer, float scale, float offset)"
             landmarkType = "5">
          </BreakpointContent>
@@ -785,11 +753,11 @@
             ignoreCount = "0"
             continueAfterRunningActions = "No"
             filePath = "src/ofApp.cpp"
-            timestampString = "469958469.50651"
+            timestampString = "470162772.874548"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "65"
-            endingLineNumber = "65"
+            startingLineNumber = "47"
+            endingLineNumber = "47"
             landmarkName = "ofApp::setup()"
             landmarkType = "5">
          </BreakpointContent>
@@ -801,11 +769,11 @@
             ignoreCount = "0"
             continueAfterRunningActions = "No"
             filePath = "src/ofApp.cpp"
-            timestampString = "470115131.801039"
+            timestampString = "470175328.886414"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "443"
-            endingLineNumber = "443"
+            startingLineNumber = "394"
+            endingLineNumber = "394"
             landmarkName = "ofApp::downMixAudio(float* inputLeft, float* inputRight, int bufferSize)"
             landmarkType = "5">
          </BreakpointContent>
@@ -817,11 +785,11 @@
             ignoreCount = "0"
             continueAfterRunningActions = "No"
             filePath = "src/myFeatures.cpp"
-            timestampString = "470110178.388507"
+            timestampString = "470166655.908724"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "300"
-            endingLineNumber = "300"
+            startingLineNumber = "266"
+            endingLineNumber = "266"
             landmarkName = "myFeatures::calcRms()"
             landmarkType = "5">
          </BreakpointContent>
@@ -833,11 +801,11 @@
             ignoreCount = "0"
             continueAfterRunningActions = "No"
             filePath = "src/myFeatures.cpp"
-            timestampString = "470110178.388507"
+            timestampString = "470166655.908724"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "301"
-            endingLineNumber = "301">
+            startingLineNumber = "267"
+            endingLineNumber = "267">
          </BreakpointContent>
       </BreakpointProxy>
       <BreakpointProxy
@@ -847,11 +815,11 @@
             ignoreCount = "0"
             continueAfterRunningActions = "No"
             filePath = "src/myFeatures.cpp"
-            timestampString = "470110178.388507"
+            timestampString = "470166655.908724"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "337"
-            endingLineNumber = "337"
+            startingLineNumber = "296"
+            endingLineNumber = "296"
             landmarkName = "myFeatures::calcSpectralFluxLog()"
             landmarkType = "5">
          </BreakpointContent>
@@ -863,11 +831,11 @@
             ignoreCount = "0"
             continueAfterRunningActions = "No"
             filePath = "src/myFeatures.cpp"
-            timestampString = "470110178.388507"
+            timestampString = "470166655.908724"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "478"
-            endingLineNumber = "478"
+            startingLineNumber = "457"
+            endingLineNumber = "457"
             landmarkName = "myFeatures::calcPitchChroma()"
             landmarkType = "5">
          </BreakpointContent>
@@ -879,11 +847,11 @@
             ignoreCount = "0"
             continueAfterRunningActions = "No"
             filePath = "src/myFeatures.cpp"
-            timestampString = "470110178.388507"
+            timestampString = "470166655.908724"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "481"
-            endingLineNumber = "481"
+            startingLineNumber = "460"
+            endingLineNumber = "460"
             landmarkName = "myFeatures::calcPitchChroma()"
             landmarkType = "5">
          </BreakpointContent>
@@ -895,11 +863,11 @@
             ignoreCount = "0"
             continueAfterRunningActions = "No"
             filePath = "src/myFeatures.cpp"
-            timestampString = "470110178.388507"
+            timestampString = "470166655.908724"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "478"
-            endingLineNumber = "478"
+            startingLineNumber = "457"
+            endingLineNumber = "457"
             landmarkName = "myFeatures::calcPitchChroma()"
             landmarkType = "5">
          </BreakpointContent>
@@ -911,11 +879,11 @@
             ignoreCount = "0"
             continueAfterRunningActions = "No"
             filePath = "src/ofApp.cpp"
-            timestampString = "470115131.801039"
+            timestampString = "470175328.886414"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "412"
-            endingLineNumber = "412"
+            startingLineNumber = "365"
+            endingLineNumber = "365"
             landmarkName = "ofApp::audioReceived(float* input, int bufferSize, int nChannels)"
             landmarkType = "5">
          </BreakpointContent>
@@ -927,12 +895,252 @@
             ignoreCount = "0"
             continueAfterRunningActions = "No"
             filePath = "src/ofApp.cpp"
-            timestampString = "470122842.350326"
+            timestampString = "470175328.886414"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "314"
-            endingLineNumber = "314"
+            startingLineNumber = "387"
+            endingLineNumber = "387"
             landmarkName = "ofApp::downMixAudio(float* inputLeft, float* inputRight, int bufferSize)"
+            landmarkType = "5">
+         </BreakpointContent>
+      </BreakpointProxy>
+      <BreakpointProxy
+         BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
+         <BreakpointContent
+            shouldBeEnabled = "No"
+            ignoreCount = "0"
+            continueAfterRunningActions = "No"
+            filePath = "src/ofApp.cpp"
+            timestampString = "470162772.874548"
+            startingColumnNumber = "9223372036854775807"
+            endingColumnNumber = "9223372036854775807"
+            startingLineNumber = "49"
+            endingLineNumber = "49"
+            landmarkName = "ofApp::setup()"
+            landmarkType = "5">
+         </BreakpointContent>
+      </BreakpointProxy>
+      <BreakpointProxy
+         BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
+         <BreakpointContent
+            shouldBeEnabled = "No"
+            ignoreCount = "0"
+            continueAfterRunningActions = "No"
+            filePath = "src/ofApp.cpp"
+            timestampString = "470138262.67834"
+            startingColumnNumber = "9223372036854775807"
+            endingColumnNumber = "9223372036854775807"
+            startingLineNumber = "11"
+            endingLineNumber = "11"
+            landmarkName = "ofApp::setup()"
+            landmarkType = "5">
+         </BreakpointContent>
+      </BreakpointProxy>
+      <BreakpointProxy
+         BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
+         <BreakpointContent
+            shouldBeEnabled = "No"
+            ignoreCount = "0"
+            continueAfterRunningActions = "No"
+            filePath = "src/ofApp.cpp"
+            timestampString = "470175328.886414"
+            startingColumnNumber = "9223372036854775807"
+            endingColumnNumber = "9223372036854775807"
+            startingLineNumber = "366"
+            endingLineNumber = "366"
+            landmarkName = "ofApp::audioReceived(float* input, int bufferSize, int nChannels)"
+            landmarkType = "5">
+         </BreakpointContent>
+      </BreakpointProxy>
+      <BreakpointProxy
+         BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
+         <BreakpointContent
+            shouldBeEnabled = "No"
+            ignoreCount = "0"
+            continueAfterRunningActions = "No"
+            filePath = "src/ofApp.cpp"
+            timestampString = "470175328.886414"
+            startingColumnNumber = "9223372036854775807"
+            endingColumnNumber = "9223372036854775807"
+            startingLineNumber = "388"
+            endingLineNumber = "388"
+            landmarkName = "ofApp::downMixAudio(float* inputLeft, float* inputRight, int bufferSize)"
+            landmarkType = "5">
+         </BreakpointContent>
+      </BreakpointProxy>
+      <BreakpointProxy
+         BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
+         <BreakpointContent
+            shouldBeEnabled = "No"
+            ignoreCount = "0"
+            continueAfterRunningActions = "No"
+            filePath = "src/ofApp.cpp"
+            timestampString = "470173706.769781"
+            startingColumnNumber = "9223372036854775807"
+            endingColumnNumber = "9223372036854775807"
+            startingLineNumber = "114"
+            endingLineNumber = "114"
+            landmarkName = "ofApp::update()"
+            landmarkType = "5">
+         </BreakpointContent>
+      </BreakpointProxy>
+      <BreakpointProxy
+         BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
+         <BreakpointContent
+            shouldBeEnabled = "No"
+            ignoreCount = "0"
+            continueAfterRunningActions = "No"
+            filePath = "src/myFeatures.cpp"
+            timestampString = "470166655.908724"
+            startingColumnNumber = "9223372036854775807"
+            endingColumnNumber = "9223372036854775807"
+            startingLineNumber = "321"
+            endingLineNumber = "321"
+            landmarkName = "myFeatures::calcSpectralFlux(float degree)"
+            landmarkType = "5">
+         </BreakpointContent>
+      </BreakpointProxy>
+      <BreakpointProxy
+         BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
+         <BreakpointContent
+            shouldBeEnabled = "No"
+            ignoreCount = "0"
+            continueAfterRunningActions = "No"
+            filePath = "src/myFeatures.cpp"
+            timestampString = "470166655.908724"
+            startingColumnNumber = "9223372036854775807"
+            endingColumnNumber = "9223372036854775807"
+            startingLineNumber = "322"
+            endingLineNumber = "322"
+            landmarkName = "myFeatures::calcSpectralFlux(float degree)"
+            landmarkType = "5">
+         </BreakpointContent>
+      </BreakpointProxy>
+      <BreakpointProxy
+         BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
+         <BreakpointContent
+            shouldBeEnabled = "No"
+            ignoreCount = "0"
+            continueAfterRunningActions = "No"
+            filePath = "src/myFeatures.cpp"
+            timestampString = "470162944.431627"
+            startingColumnNumber = "9223372036854775807"
+            endingColumnNumber = "9223372036854775807"
+            startingLineNumber = "75"
+            endingLineNumber = "75"
+            landmarkName = "myFeatures::extractFeatures(float* input, int nChannels)"
+            landmarkType = "5">
+         </BreakpointContent>
+      </BreakpointProxy>
+      <BreakpointProxy
+         BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
+         <BreakpointContent
+            shouldBeEnabled = "No"
+            ignoreCount = "0"
+            continueAfterRunningActions = "No"
+            filePath = "src/myFeatures.cpp"
+            timestampString = "470166834.327426"
+            startingColumnNumber = "9223372036854775807"
+            endingColumnNumber = "9223372036854775807"
+            startingLineNumber = "191"
+            endingLineNumber = "191"
+            landmarkName = "myFeatures::getMostNotableOnsets()"
+            landmarkType = "5">
+         </BreakpointContent>
+      </BreakpointProxy>
+      <BreakpointProxy
+         BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
+         <BreakpointContent
+            shouldBeEnabled = "No"
+            ignoreCount = "0"
+            continueAfterRunningActions = "No"
+            filePath = "src/myFeatures.cpp"
+            timestampString = "470167703.681309"
+            startingColumnNumber = "9223372036854775807"
+            endingColumnNumber = "9223372036854775807"
+            startingLineNumber = "192"
+            endingLineNumber = "192"
+            landmarkName = "myFeatures::getMostNotableOnsets()"
+            landmarkType = "5">
+         </BreakpointContent>
+      </BreakpointProxy>
+      <BreakpointProxy
+         BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
+         <BreakpointContent
+            shouldBeEnabled = "No"
+            ignoreCount = "0"
+            continueAfterRunningActions = "No"
+            filePath = "src/myFeatures.cpp"
+            timestampString = "470167726.281755"
+            startingColumnNumber = "9223372036854775807"
+            endingColumnNumber = "9223372036854775807"
+            startingLineNumber = "193"
+            endingLineNumber = "193"
+            landmarkName = "myFeatures::getMostNotableOnsets()"
+            landmarkType = "5">
+         </BreakpointContent>
+      </BreakpointProxy>
+      <BreakpointProxy
+         BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
+         <BreakpointContent
+            shouldBeEnabled = "No"
+            ignoreCount = "0"
+            continueAfterRunningActions = "No"
+            filePath = "src/myFeatures.cpp"
+            timestampString = "470167733.473016"
+            startingColumnNumber = "9223372036854775807"
+            endingColumnNumber = "9223372036854775807"
+            startingLineNumber = "190"
+            endingLineNumber = "190"
+            landmarkName = "myFeatures::getMostNotableOnsets()"
+            landmarkType = "5">
+         </BreakpointContent>
+      </BreakpointProxy>
+      <BreakpointProxy
+         BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
+         <BreakpointContent
+            shouldBeEnabled = "No"
+            ignoreCount = "0"
+            continueAfterRunningActions = "No"
+            filePath = "src/myFeatures.cpp"
+            timestampString = "470167819.026877"
+            startingColumnNumber = "9223372036854775807"
+            endingColumnNumber = "9223372036854775807"
+            startingLineNumber = "195"
+            endingLineNumber = "195"
+            landmarkName = "myFeatures::getMostNotableOnsets()"
+            landmarkType = "5">
+         </BreakpointContent>
+      </BreakpointProxy>
+      <BreakpointProxy
+         BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
+         <BreakpointContent
+            shouldBeEnabled = "No"
+            ignoreCount = "0"
+            continueAfterRunningActions = "No"
+            filePath = "src/myEffects.cpp"
+            timestampString = "470170540.749255"
+            startingColumnNumber = "9223372036854775807"
+            endingColumnNumber = "9223372036854775807"
+            startingLineNumber = "14"
+            endingLineNumber = "14"
+            landmarkName = "myEffects::myEffects(string imageFileName,int width, int height)"
+            landmarkType = "5">
+         </BreakpointContent>
+      </BreakpointProxy>
+      <BreakpointProxy
+         BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
+         <BreakpointContent
+            shouldBeEnabled = "No"
+            ignoreCount = "0"
+            continueAfterRunningActions = "No"
+            filePath = "src/ofApp.cpp"
+            timestampString = "470175328.886414"
+            startingColumnNumber = "9223372036854775807"
+            endingColumnNumber = "9223372036854775807"
+            startingLineNumber = "318"
+            endingLineNumber = "318"
+            landmarkName = "ofApp::draw()"
             landmarkType = "5">
          </BreakpointContent>
       </BreakpointProxy>
